@@ -8,6 +8,7 @@ import History from "./components/History";
 import Latest from "./components/Latest";
 
 export default class Dashboard extends Component {
+
   render() {
     return (
       <Root>

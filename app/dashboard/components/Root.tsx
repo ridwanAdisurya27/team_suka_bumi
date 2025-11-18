@@ -5,10 +5,11 @@ import Sidebar from "./Sidebar";
 import LeaderBoard from "./LeaderBoard";
 
 interface RootProps {
-  children?: ReactNode;
+  children: React.ReactNode;
+  show?: boolean;
 }
 
-export default function Root({ children }: RootProps) {
+export default function Root({ children, show = false }: RootProps) {
   return (
     <>
       <link
@@ -21,8 +22,8 @@ export default function Root({ children }: RootProps) {
       />
       <div data-theme="emerald">
         <div className="w-full bg-leaf-300 flex flex-row">
-          <Sidebar />
-          <div className="w-full p-4 h-screen bg-leaf-50 flex flex-col gap-4 items-center">
+          <Sidebar show = {show}/>
+          <div className="w-full p-4 h-screen bg-leaf-50 flex flex-col gap-4">
             {/* Content */}
             {children}
           </div>
