@@ -5,15 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Sidebar({ show = false }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isTextVisible, setIsTextVisible] = useState(true);
   const pathname = usePathname();
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const closeMenu = () => {
-    setIsMenuOpen(false);
+  const toggleTextVisibility = () => {
+    setIsTextVisible(!isTextVisible);
   };
 
   const isActive = (path: string) => {
@@ -23,76 +19,128 @@ export default function Sidebar({ show = false }) {
   };
 
   return (
-    <div className="flex flex-col">
-      <Link
-        href="/"
-        className="w-full px-4 pt-3 pb-2 flex justify-center items-center space-x-3 relogo"
-        onClick={() => { }}
-      >
-        <span className="self-center text-3xl font-semibold whitespace-nowrap text-leaf-900">
-          Resapling
-        </span>
-      </Link>
-      <ul className="w-60 p-4 h-screen menu">
-        <li>
+    <div
+      className={`flex flex-col ${
+        isTextVisible ? "w-60" : "w-20"
+      } transition-all duration-300`}
+    >
+      <div className="flex flex-row p-4 width-full items-center justify-between">
+        {/* Toggle button */}
+        <button
+          onClick={toggleTextVisibility}
+          className="p-2 rounded-full hover:bg-leaf-100 transition-colors flex items-center justify-between"
+          title={isTextVisible ? "Hide text" : "Show text"}
+        >
+          <span className="material-symbols-rounded text-leaf-900">
+            {isTextVisible
+              ? "keyboard_double_arrow_left"
+              : "keyboard_double_arrow_right"}
+          </span>
+        </button>
+        {isTextVisible && <span className="retext text-3xl mr-4">Resapling</span>}
+      </div>
+      {/* Navigation menu */}
+      <ul className={`p-4 h-screen menu ${!isTextVisible ? "px-2" : ""}`}>
+        <li className="space-y-2">
           <Link
-            className={isActive("/dashboard")}
+            className={`${isActive("/dashboard")} flex items-center ${
+              !isTextVisible ? "justify-center" : "space-x-3"
+            } p-2 hover:bg-leaf-100 transition-colors`}
             href="/dashboard"
-            onClick={closeMenu}
+            onClick={() => {}}
+            title="Dashboard"
           >
             <span className="material-symbols-rounded">dashboard</span>
-            Dashboard
+            {isTextVisible && <span>Dashboard</span>}
           </Link>
+
           <Link
-            className={isActive("/dashboard/campaign")}
+            className={`${isActive("/dashboard/campaign")} flex items-center ${
+              !isTextVisible ? "justify-center" : "space-x-3"
+            } p-2 hover:bg-leaf-100 transition-colors`}
             href="/dashboard/campaign"
-            onClick={closeMenu}
+            onClick={() => {}}
+            title="Kampanye"
           >
             <span className="material-symbols-rounded">volunteer_activism</span>
-            Kampanye
+            {isTextVisible && <span>Kampanye</span>}
           </Link>
+
           <Link
-            className={isActive("/dashboard/leaderboard")}
+            className={`${isActive(
+              "/dashboard/leaderboard"
+            )} flex items-center ${
+              !isTextVisible ? "justify-center" : "space-x-3"
+            } p-2 hover:bg-leaf-100 transition-colors`}
             href="/dashboard/leaderboard"
-            onClick={closeMenu}
+            onClick={() => {}}
+            title="LeaderBoard"
           >
             <span className="material-symbols-rounded">leaderboard</span>
-            LeaderBoard
+            {isTextVisible && <span>LeaderBoard</span>}
           </Link>
+
           <Link
-            className={isActive("/dashboard/upgrade")}
+            className={`${isActive("/dashboard/upgrade")} flex items-center ${
+              !isTextVisible ? "justify-center" : "space-x-3"
+            } p-2 hover:bg-leaf-100 transition-colors`}
             href="/dashboard/upgrade"
-            onClick={closeMenu}
+            onClick={() => {}}
+            title="Upgrade"
           >
-            <span className="material-symbols-rounded">keyboard_double_arrow_up</span>
-            Upgrade
+            <span className="material-symbols-rounded">
+              keyboard_double_arrow_up
+            </span>
+            {isTextVisible && <span>Upgrade</span>}
           </Link>
+
           <Link
-            className={isActive("/dashboard/admin")}
+            className={`${isActive("/dashboard/admin")} flex items-center ${
+              !isTextVisible ? "justify-center" : "space-x-3"
+            } p-2 hover:bg-leaf-100 transition-colors`}
             href="/dashboard/admin"
-            onClick={closeMenu}
+            onClick={() => {}}
+            title="Admin"
           >
             <span className="material-symbols-rounded">person</span>
-            admin
+            {isTextVisible && <span>Admin</span>}
           </Link>
-          {show && <>
-            <Link
-              className={isActive("/dashboard/admin/data")}
-              href="/dashboard/admin/data"
-              onClick={closeMenu}
-            >
-              <span className="material-symbols-rounded">subdirectory_arrow_right</span>
-              <span className="">data</span>
-            </Link>
-            <Link
-              className={isActive("/dashboard/admin/campaign")}
-              href="/dashboard/admin/campaign"
-              onClick={closeMenu}
-            >
-              <span className="material-symbols-rounded">subdirectory_arrow_right</span>
-              <span className="">Campaign</span>
-            </Link>
-          </>}
+
+          {show && (
+            <>
+              <Link
+                className={`${isActive(
+                  "/dashboard/admin/data"
+                )} flex items-center ${
+                  !isTextVisible ? "justify-center" : "space-x-3"
+                } p-2 hover:bg-leaf-100 transition-colors`}
+                href="/dashboard/admin/data"
+                onClick={() => {}}
+                title="Data"
+              >
+                <span className="material-symbols-rounded">
+                  subdirectory_arrow_right
+                </span>
+                {isTextVisible && <span>Data</span>}
+              </Link>
+
+              <Link
+                className={`${isActive(
+                  "/dashboard/admin/campaign"
+                )} flex items-center ${
+                  !isTextVisible ? "justify-center" : "space-x-3"
+                } p-2 hover:bg-leaf-100 transition-colors`}
+                href="/dashboard/admin/campaign"
+                onClick={() => {}}
+                title="Campaign"
+              >
+                <span className="material-symbols-rounded">
+                  subdirectory_arrow_right
+                </span>
+                {isTextVisible && <span>Campaign</span>}
+              </Link>
+            </>
+          )}
         </li>
       </ul>
     </div>

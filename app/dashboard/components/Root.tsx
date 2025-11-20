@@ -23,7 +23,7 @@ export default function Root({ children, show = false }: RootProps) {
       <div data-theme="emerald">
         <div className="w-full bg-leaf-300 flex flex-row">
           <Sidebar show = {show}/>
-          <div className="w-full p-4 h-screen bg-leaf-50 flex flex-col gap-4">
+          <div className="w-full p-4 h-screen bg-leaf-50 flex flex-col gap-4 items-center">
             {/* Content */}
             {children}
           </div>
