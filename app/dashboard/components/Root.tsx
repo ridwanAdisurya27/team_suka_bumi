@@ -5,17 +5,15 @@ import Sidebar from "./Sidebar";
 import LeaderBoard from "./LeaderBoard";
 import { useAuth } from "../../../hooks/useAuth"; // Import useAuth
 import { useRouter } from "next/navigation"; // Import useRouter
-import { SidebarProvider, useSidebar } from "./SidebarContext";
 
 interface RootProps {
   children: React.ReactNode;
   show?: boolean;
 }
 
-function RootContent({ children, show = false }: RootProps) {
+export default function RootContent({ children, show = false }: RootProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { isTextVisible } = useSidebar();
 
   // Redirect jika user belum login
   useEffect(() => {
@@ -61,10 +59,10 @@ function RootContent({ children, show = false }: RootProps) {
   );
 }
 
-export default function Root({ children, show = false }: RootProps) {
-  return (
-    <SidebarProvider>
-      <RootContent children={children} show={show} />
-    </SidebarProvider>
-  );
-}
+// export default function Root({ children, show = false }: RootProps) {
+//   return (
+//     <SidebarProvider>
+//       <RootContent children={children} show={show} />
+//     </SidebarProvider>
+//   );
+// }

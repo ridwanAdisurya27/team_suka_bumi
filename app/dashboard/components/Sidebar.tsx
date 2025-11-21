@@ -4,11 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "../../../hooks/useAuth"; // Import useAuth
-import { useSidebar } from "./SidebarContext";
 
 export default function Sidebar({ show = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isTextVisible, setIsTextVisible } = useSidebar();
+  const [ isTextVisible, setIsTextVisible ] = useState(false);
   const pathname = usePathname();
   const { logout } = useAuth(); // Ambil fungsi logout dari useAuth
 
