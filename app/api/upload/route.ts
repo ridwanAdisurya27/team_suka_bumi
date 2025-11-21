@@ -53,6 +53,7 @@ function getMimeType(fileName: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  console.log("filemlebu");
   try {
     const form = await req.formData();
     const uploadedFiles: Record<string, string> = {};

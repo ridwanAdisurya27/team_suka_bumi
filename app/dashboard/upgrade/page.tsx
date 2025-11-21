@@ -21,11 +21,22 @@ function Biodata({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    const fieldName = e.target.name;
+
+    console.log(`🔄 File change for ${fieldName}:`, file);
+
     if (file) {
       setFormData((prev: any) => ({
         ...prev,
-        KTP: file,
+        [fieldName]: file,
       }));
+      console.log(
+        `✅ File set in formData: ${fieldName}`,
+        file.name,
+        file.size
+      );
+    } else {
+      console.log(`❌ No file selected for ${fieldName}`);
     }
   };
 
@@ -150,11 +161,20 @@ function File({ formData, setFormData }: { formData: any; setFormData: any }) {
     const file = e.target.files?.[0];
     const fieldName = e.target.name;
 
+    console.log(`🔄 File change for ${fieldName}:`, file);
+
     if (file) {
       setFormData((prev: any) => ({
         ...prev,
         [fieldName]: file,
       }));
+      console.log(
+        `✅ File set in formData: ${fieldName}`,
+        file.name,
+        file.size
+      );
+    } else {
+      console.log(`❌ No file selected for ${fieldName}`);
     }
   };
 
@@ -245,29 +265,65 @@ export default function Upgrade() {
   };
 
   // Tambahkan type guard function
-  const isFile = (value: any): value is File => {
-    return value instanceof File;
+  const isFile = (value: any): boolean => {
+    if (!value) return false;
+    // Check for File object properties
+    return (
+      value instanceof File ||
+      (typeof value === "object" &&
+        "name" in value &&
+        "size" in value &&
+        "type" in value)
+    );
   };
 
   const handleSubmit = async () => {
     try {
-      // Buat FormData untuk mengirim file dan data teks
-      const submitFormData = new FormData();
+      console.log("=== DEBUG FORM DATA BEFORE SUBMIT ===");
 
-      // Tambahkan data teks
+      const submitFormData = new FormData();
+      let fileCount = 0;
+      let textCount = 0;
+
+      // Tambahkan data teks dan file
       Object.entries(formData).forEach(([key, value]) => {
-        if (isFile(value)) {
-          submitFormData.append(key, value);
+        if (
+          value &&
+          typeof value === "object" &&
+          "name" in value &&
+          "size" in value &&
+          "type" in value
+        ) {
+          // Type assertion
+          const file = value as File;
+          console.log(`📁 Adding FILE: ${key}`, file.name, file.size);
+          submitFormData.append(key, file);
+          fileCount++;
         } else if (value !== null && value !== undefined) {
+          console.log(`📝 Adding TEXT: ${key}`, value);
           submitFormData.append(key, value.toString());
+          textCount++;
         }
       });
 
-      // PERBAIKAN: Tambahkan http:// pada URL
+      console.log(
+        `=== SUMMARY: ${textCount} text fields, ${fileCount} files ===`
+      );
+
+      // Debug FormData contents
+      console.log("=== FORM DATA CONTENTS ===");
+      for (let [key, value] of submitFormData.entries()) {
+        console.log(
+          `${key}:`,
+          value instanceof File
+            ? `File: ${value.name} (${value.size} bytes)`
+            : value
+        );
+      }
+
       const response = await fetch("http://localhost:4000/api/upgrade", {
         method: "POST",
         body: submitFormData,
-        // PERBAIKAN: Jangan set headers untuk FormData, browser akan otomatis set Content-Type dengan boundary
       });
 
       if (response.ok) {
@@ -275,7 +331,6 @@ export default function Upgrade() {
         console.log("Success:", result);
         alert("Data berhasil dikirim!");
       } else {
-        // PERBAIKAN: Tambahkan error handling yang lebih informatif
         const errorText = await response.text();
         console.error("Server error:", response.status, errorText);
         throw new Error(
@@ -289,7 +344,6 @@ export default function Upgrade() {
       );
     }
   };
-
   const renderStepContent = () => {
     switch (Step) {
       case 0:
