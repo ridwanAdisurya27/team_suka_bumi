@@ -39,14 +39,7 @@ export default function Page({ params }: PageProps) {
     }
   };
 
-  const handleCopyLink = () => {
-    if (typeof window === "undefined") return;
-
-    const currentUrl = window.location.href;
-    navigator.clipboard.writeText(currentUrl);
-    setIsLinkCopied(true);
-    setTimeout(() => setIsLinkCopied(false), 2000);
-  };
+  const handleCopyLink = () => {};
 
   const handleSubmitDonasi = (e: React.FormEvent) => {
     e.preventDefault();
