@@ -1,405 +1,182 @@
 "use client";
 
-import { Component, useState } from "react";
-import Root from "../components/Root";
+import { useState } from "react";
 
-function Biodata({
-  formData,
-  setFormData,
-}: {
-  formData: any;
-  setFormData: any;
-}) {
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev: any) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+export default function UpgradePage() {
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    const fieldName = e.target.name;
-
-    console.log(`🔄 File change for ${fieldName}:`, file);
-
-    if (file) {
-      setFormData((prev: any) => ({
-        ...prev,
-        [fieldName]: file,
-      }));
-      console.log(
-        `✅ File set in formData: ${fieldName}`,
-        file.name,
-        file.size
-      );
-    } else {
-      console.log(`❌ No file selected for ${fieldName}`);
-    }
-  };
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsLoading(true);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setIsLoading(false);
+    alert("Application submitted successfully! We will review your documents.");
+  }
 
   return (
-    <>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Nama</legend>
-        <input
-          type="text"
-          name="nama"
-          className="input w-full"
-          placeholder="Type here"
-          value={formData.nama || ""}
-          onChange={handleInputChange}
-        />
-      </fieldset>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Nomor Telepon</legend>
-        <input
-          type="number"
-          name="nomorTelepon"
-          className="input w-full"
-          placeholder="Type here"
-          value={formData.nomorTelepon || ""}
-          onChange={handleInputChange}
-        />
-      </fieldset>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">KTP</legend>
-        <input
-          type="file"
-          name="KTP"
-          className="file-input w-full"
-          onChange={handleFileChange}
-        />
-      </fieldset>
-    </>
-  );
-}
-
-function DataYayasan({
-  formData,
-  setFormData,
-}: {
-  formData: any;
-  setFormData: any;
-}) {
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev: any) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  return (
-    <>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Nama Yayasan</legend>
-        <input
-          onChange={handleInputChange}
-          type="text"
-          name="namaYayasan"
-          className="input w-full"
-          placeholder="Type here"
-          value={formData.namaYayasan || ""}
-        />
-      </fieldset>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Alamat Yayasan</legend>
-        <input
-          onChange={handleInputChange}
-          type="text"
-          name="alamatYayasan"
-          className="input w-full"
-          placeholder="Type here"
-          value={formData.alamatYayasan || ""}
-        />
-      </fieldset>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Nomor Telepon Yayasan</legend>
-        <input
-          onChange={handleInputChange}
-          type="number"
-          name="nomorTeleponYayasan"
-          className="input w-full"
-          placeholder="Type here"
-          value={formData.nomorTeleponYayasan || ""}
-        />
-      </fieldset>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">NPWP Yayasan</legend>
-        <input
-          onChange={handleInputChange}
-          type="number"
-          name="npwp"
-          className="input w-full"
-          placeholder="Type here"
-          value={formData.npwp || ""}
-        />
-      </fieldset>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Media Sosial</legend>
-        <input
-          className="input w-full"
-          type="url"
-          name="socialMediaUrl"
-          required
-          placeholder="https://"
-          value={formData.socialMediaUrl || ""}
-          onChange={handleInputChange}
-          pattern="^(https?://)?([a-zA-Z0-9]([a-zA-Z0-9\-].*[a-zA-Z0-9])?\.)+[a-zA-Z].*$"
-          title="Must be valid URL"
-        />
-      </fieldset>
-    </>
-  );
-}
-
-function File({ formData, setFormData }: { formData: any; setFormData: any }) {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    const fieldName = e.target.name;
-
-    console.log(`🔄 File change for ${fieldName}:`, file);
-
-    if (file) {
-      setFormData((prev: any) => ({
-        ...prev,
-        [fieldName]: file,
-      }));
-      console.log(
-        `✅ File set in formData: ${fieldName}`,
-        file.name,
-        file.size
-      );
-    } else {
-      console.log(`❌ No file selected for ${fieldName}`);
-    }
-  };
-
-  return (
-    <>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Surat Izin Operasional</legend>
-        <input
-          type="file"
-          name="suratIzinOperasional"
-          className="file-input w-full"
-          onChange={handleFileChange}
-        />
-      </fieldset>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Surat Pendirian LSM</legend>
-        <input
-          type="file"
-          name="suratPendirianLSM"
-          className="file-input w-full"
-          onChange={handleFileChange}
-        />
-      </fieldset>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">
-          Surat Pengesahan Badan Hukum
-        </legend>
-        <input
-          type="file"
-          name="suratPengesahanBadanHukum"
-          className="file-input w-full"
-          onChange={handleFileChange}
-        />
-      </fieldset>
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Surat Domisili Yayasan</legend>
-        <input
-          type="file"
-          name="suratDomisiliYayasan"
-          className="file-input w-full"
-          onChange={handleFileChange}
-        />
-      </fieldset>
-    </>
-  );
-}
-
-function KonfirmasiUlang({ formData }: { formData: any }) {
-  // Filter hanya data teks (bukan file)
-  const textData = Object.entries(formData).reduce((acc: any, [key, value]) => {
-    if (!(value instanceof File)) {
-      acc[key] = value;
-    }
-    return acc;
-  }, {});
-
-  return (
-    <>
-      <p className="font-bold mb-4">Konfirmasi data yang telah dimasukkan:</p>
-      <div className="bg-white p-4 rounded-lg">
-        <pre className="text-sm">{JSON.stringify(textData, null, 2)}</pre>
+    <div className="max-w-3xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-800">Become an Organizer</h1>
+        <p className="text-gray-500">
+          Join our network of foundations and start creating your own tree planting campaigns.
+        </p>
       </div>
-    </>
-  );
-}
 
-export default function Upgrade() {
-  let [Step, setStep] = useState(0);
-  const [formData, setFormData] = useState({
-    nama: "",
-    nomorTelepon: "",
-    namaYayasan: "",
-    alamatYayasan: "",
-    nomorTeleponYayasan: "",
-    npwp: "",
-    socialMediaUrl: "",
-    KTP: null,
-    suratIzinOperasional: null,
-    suratPendirianLSM: null,
-    suratPengesahanBadanHukum: null,
-    suratDomisiliYayasan: null,
-  });
-
-  const handleNextStep = (step: number) => {
-    if (Step < 3) {
-      setStep(step);
-    }
-  };
-
-  // Tambahkan type guard function
-  const isFile = (value: any): boolean => {
-    if (!value) return false;
-    // Check for File object properties
-    return (
-      value instanceof File ||
-      (typeof value === "object" &&
-        "name" in value &&
-        "size" in value &&
-        "type" in value)
-    );
-  };
-
-  const handleSubmit = async () => {
-    try {
-      console.log("=== DEBUG FORM DATA BEFORE SUBMIT ===");
-
-      const submitFormData = new FormData();
-      let fileCount = 0;
-      let textCount = 0;
-
-      // Tambahkan data teks dan file
-      Object.entries(formData).forEach(([key, value]) => {
-        if (
-          value &&
-          typeof value === "object" &&
-          "name" in value &&
-          "size" in value &&
-          "type" in value
-        ) {
-          // Type assertion
-          const file = value as File;
-          console.log(`📁 Adding FILE: ${key}`, file.name, file.size);
-          submitFormData.append(key, file);
-          fileCount++;
-        } else if (value !== null && value !== undefined) {
-          console.log(`📝 Adding TEXT: ${key}`, value);
-          submitFormData.append(key, value.toString());
-          textCount++;
-        }
-      });
-
-      console.log(
-        `=== SUMMARY: ${textCount} text fields, ${fileCount} files ===`
-      );
-
-      // Debug FormData contents
-      console.log("=== FORM DATA CONTENTS ===");
-      for (let [key, value] of submitFormData.entries()) {
-        console.log(
-          `${key}:`,
-          value instanceof File
-            ? `File: ${value.name} (${value.size} bytes)`
-            : value
-        );
-      }
-
-      const response = await fetch("http://localhost:4000/api/upgrade", {
-        method: "POST",
-        body: submitFormData,
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Success:", result);
-        alert("Data berhasil dikirim!");
-      } else {
-        const errorText = await response.text();
-        console.error("Server error:", response.status, errorText);
-        throw new Error(
-          `Failed to submit data: ${response.status} ${errorText}`
-        );
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      alert(
-        "Terjadi kesalahan saat mengirim data: " + (error as Error).message
-      );
-    }
-  };
-  const renderStepContent = () => {
-    switch (Step) {
-      case 0:
-        return <Biodata formData={formData} setFormData={setFormData} />;
-      case 1:
-        return <DataYayasan formData={formData} setFormData={setFormData} />;
-      case 2:
-        return <File formData={formData} setFormData={setFormData} />;
-      case 3:
-        return <KonfirmasiUlang formData={formData} />;
-      default:
-        return <Biodata formData={formData} setFormData={setFormData} />;
-    }
-  };
-
-  const getStepClass = (index: number) => {
-    if (index < Step) return "step step-success";
-    if (index === Step) return "step step-primary";
-    return "step";
-  };
-
-  const handleStepButtonClick = () => {
-    if (Step < 3) {
-      handleNextStep(Step + 1);
-    } else {
-      handleSubmit();
-    }
-  };
-
-  return (
-    <Root>
-      <div className="w-full min-h-screen bg-leaf-50 flex flex-col gap-4 p-4">
-        <p className="text-2xl font-bold">Upgrade Akun - Formulir Yayasan</p>
-        <ul className="steps">
-          <li onClick={() => handleNextStep(0)} className={getStepClass(0)}>
-            Biodata
-          </li>
-          <li onClick={() => handleNextStep(1)} className={getStepClass(1)}>
-            Data Yayasan
-          </li>
-          <li onClick={() => handleNextStep(2)} className={getStepClass(2)}>
-            File Yayasan
-          </li>
-          <li className={getStepClass(3)}>Konfirmasi Ulang</li>
-        </ul>
-        <div className="w-full flex justify-center">
-          <div className="w-full max-w-2xl bg-gray-200 rounded-xl p-4 flex flex-col gap-3">
-            {renderStepContent()}
-            <button
-              className="btn btn-success w-full mt-4 !bg-leaf-700 !text-white"
-              onClick={handleStepButtonClick}
-            >
-              {Step < 3 ? "Next" : "Submit"}
-            </button>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Organization Details */}
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <i className="bx bxs-building-house text-leaf-500"></i> Organization Details
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Organization Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="e.g. Yayasan Hijau Indonesia"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="+62 812 3456 7890"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="contact@foundation.org"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Short Description <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  required
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="Tell us about your organization's mission and goals..."
+                ></textarea>
+              </div>
+            </div>
           </div>
-        </div>
+
+          <hr className="border-gray-100" />
+
+          {/* Legal Information */}
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <i className="bx bxs-file-doc text-leaf-500"></i> Legal Information
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  NPWP / Tax ID <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="00.000.000.0-000.000"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Operational Permit Number <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="SK-12345/2024"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Domicile Address <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  required
+                  rows={2}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="Full address of the organization..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <hr className="border-gray-100" />
+
+          {/* Document Uploads */}
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <i className="bx bxs-cloud-upload text-leaf-500"></i> Document Uploads
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Legal Documents (PDF) <span className="text-red-500">*</span>
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
+                  <i className="bx bx-upload text-3xl text-gray-400 mb-2"></i>
+                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
+                  <p className="text-xs text-gray-400 mt-1">Max file size: 10MB</p>
+                  <input type="file" className="hidden" accept=".pdf" required />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  KTP / ID Card (JPG, PNG) <span className="text-red-500">*</span>
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
+                  <i className="bx bx-image-add text-3xl text-gray-400 mb-2"></i>
+                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
+                  <p className="text-xs text-gray-400 mt-1">Max file size: 5MB</p>
+                  <input type="file" className="hidden" accept="image/*" required />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-4">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-leaf-600 hover:bg-leaf-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <i className="bx bx-loader-alt bx-spin"></i> Submitting...
+                </>
+              ) : (
+                <>
+                  Submit Application <i className="bx bx-send"></i>
+                </>
+              )}
+            </button>
+            <p className="text-center text-xs text-gray-500 mt-4">
+              By submitting this form, you agree to our Terms of Service and Privacy Policy.
+            </p>
+          </div>
+        </form>
       </div>
-    </Root>
+    </div>
   );
 }

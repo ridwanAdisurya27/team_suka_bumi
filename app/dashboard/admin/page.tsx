@@ -1,110 +1,111 @@
-"use client";
+import Link from "next/link";
+import Image from "next/image";
 
-import { useEffect } from "react";
-import Root from "../components/Root";
-import LeaderBoard from "../components/LeaderBoard";
-import "./style.css";
-import DonationCard from "@/components/DonationCard";
-
-export default function Campaign() {
-  useEffect(() => {
-    // Initialize AOS
-    if (typeof window !== "undefined") {
-      const AOS = require("aos");
-      AOS.init({
-        duration: 1000,
-        once: true,
-      });
-    }
-  }, []);
+export default function AdminPage() {
+  // Mock Campaign Data
+  const campaigns = [
+    {
+      id: 1,
+      title: "Reforest Borneo",
+      status: "Active",
+      raised: 15000000,
+      target: 50000000,
+      trees: 1500,
+      image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800",
+    },
+    {
+      id: 2,
+      title: "Urban Green Jakarta",
+      status: "Planning",
+      raised: 5000000,
+      target: 25000000,
+      trees: 200,
+      image: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&q=80&w=800",
+    },
+    {
+      id: 3,
+      title: "Save Sumatra Tigers",
+      status: "Completed",
+      raised: 75000000,
+      target: 70000000,
+      trees: 3000,
+      image: "https://images.unsplash.com/photo-1596356453261-0d265ae2520d?auto=format&fit=crop&q=80&w=800",
+    },
+  ];
 
   return (
-    <Root show={true}>
-      <div data-aos="fade-right" className="w-full">
-        <p className="text-3xl font-bold"> Hallo Ridwan </p>
-        <p> Siap menjadi pahlawan hijau hari ini? </p>
-      </div>
-      <div className="grid grid-cols-1 w-full gap-4 sm:grid-cols-3">
-        <a
-          className="bg-white shadow-xl/20 border-green-950 w-full h-[150px] rounded-2xl p-4 block"
-          data-aos="flip-up"
-          href="/dashboard/admin/campaign"
-        >
-          <div className="bg-leaf-700 rounded-2xl border-2 border-white w-[50px] h-[50px] flex items-center justify-center ">
-            <i className="bx bx-message-add text-white text-2xl"></i>
-          </div>
-          <p className="text-xl font-bold">Buat Campaign</p>
-        </a>
-        <a
-          className="bg-white shadow-xl/20 border-green-950 w-full h-[150px] rounded-2xl p-4"
-          data-aos="flip-up"
-          href="/dashboard/admin/data"
-        >
-          <div className="bg-leaf-700 rounded-2xl border-2 border-white w-[50px] h-[50px] flex items-center justify-center">
-            <i className="bx bx-box text-white text-2xl"></i>
-          </div>
-          <p className="text-xl font-bold">Cek Data</p>
-        </a>
-        <a
-          className="bg-white shadow-xl/20 border-green-950 w-full h-[150px] rounded-2xl p-4"
-          data-aos="flip-up"
-          href="/dashboard/admin/profile"
-        >
-          <div className="bg-leaf-700 rounded-2xl border-2 border-white w-[50px] h-[50px] flex items-center justify-center">
-            <i className="bx bx-user text-white text-2xl"></i>
-          </div>
-          <p className="text-xl font-bold">Update Profil</p>
-        </a>
-      </div>
-      <section className="donation pb-20">
-        <div className="flex justify-between">
-          <p className="text-3xl font-bold" data-aos="fade-right">
-            Campaign
-          </p>
-          <a
-            href="/dashboard/admin/campaign"
-            className="bg-green-800 text-2xl text-white rounded-full w-10 h-10 justify-center items-center mr-5 hidden lg:flex"
-          >
-            {" "}
-            {">"}{" "}
-          </a>
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Campaign Management</h1>
+          <p className="text-gray-500">Manage your foundation's campaigns and track progress.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 xl:gap-12 mt-10 mx-auto justify-between">
-          {donationCards.map((card, index) => (
-            <DonationCard key={index} {...card} />
-          ))}
+        <Link
+          href="/dashboard/admin/add"
+          className="px-4 py-2 bg-leaf-600 hover:bg-leaf-700 text-white rounded-lg transition-colors flex items-center gap-2"
+        >
+          <i className="bx bx-plus"></i> Create Campaign
+        </Link>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
+              <tr>
+                <th className="px-6 py-4 font-medium">Campaign</th>
+                <th className="px-6 py-4 font-medium">Status</th>
+                <th className="px-6 py-4 font-medium">Funds Raised</th>
+                <th className="px-6 py-4 font-medium">Trees</th>
+                <th className="px-6 py-4 font-medium text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {campaigns.map((campaign) => (
+                <tr key={campaign.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-12 h-12 rounded-lg overflow-hidden">
+                        <Image
+                          src={""}
+                          alt={campaign.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <span className="font-medium text-gray-800">{campaign.title}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        ${campaign.status === 'Active' ? 'bg-green-100 text-green-800' :
+                          campaign.status === 'Planning' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'}`}
+                    >
+                      {campaign.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    Rp {campaign.raised.toLocaleString()} <span className="text-xs text-gray-400">/ {campaign.target.toLocaleString()}</span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {campaign.trees} 🌲
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <Link
+                      href={`/dashboard/admin/${campaign.id}`}
+                      className="text-leaf-600 hover:text-leaf-800 font-medium text-sm"
+                    >
+                      Manage
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </section>
-    </Root>
+      </div>
+    </div>
   );
 }
-
-const donationCards = [
-  {
-    image: "/assets/img/item/sinarmas.jpeg",
-    title: "Sinarmas",
-    description: "Menanam kembali kertas menjadi pohon bersama PT. Sinarmas",
-    current: "240,210 Bibit",
-    target: "500,000 Bibit",
-    progress: 49,
-    deadline: "6 hari lagi",
-  },
-  {
-    image: "/assets/img/item/ikn.jpg",
-    title: "Otorita IKA-EN",
-    description: "Revitalisasi Hutan di Kalimantan akibat proyek strategis",
-    current: "147,783 Bibit",
-    target: "600,000 Bibit",
-    progress: 23,
-    deadline: "2 Minggu lagi",
-  },
-  {
-    image: "/assets/img/item/gemarsorong.jpg",
-    title: "Hulujaya",
-    description: "Reboisasi Mangrove pencegah abrasi di Sorong Papua",
-    current: "21,023 Bibit",
-    target: "100,000 Bibit",
-    progress: 21,
-    deadline: "1 Bulan lagi",
-  },
-];
