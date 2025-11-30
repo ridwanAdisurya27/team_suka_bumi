@@ -22,8 +22,7 @@ export default function AddCampaignPage() {
     return (
         <div className="max-w-4xl mx-auto">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-800">Create New Campaign</h1>
-                <p className="text-gray-500">Launch a new reforestation initiative.</p>
+                <h1 className="text-3xl font-bold text-gray-800">Buat Kampanye Baru</h1>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
@@ -32,19 +31,19 @@ export default function AddCampaignPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Campaign Title <span className="text-red-500">*</span>
+                                Judul Kampanye <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
-                                placeholder="e.g. Mangrove Restoration Project Phase 2"
+                                placeholder="e.g. Hijaukan Kembali Hutan Sumatra"
                             />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Donation Target (Rp) <span className="text-red-500">*</span>
+                                Target Donasi (Rp) <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="number"
@@ -56,7 +55,7 @@ export default function AddCampaignPage() {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Location <span className="text-red-500">*</span>
+                                Lokasi <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
@@ -68,7 +67,7 @@ export default function AddCampaignPage() {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Donation Open Date <span className="text-red-500">*</span>
+                                Tanggal Mulai <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="date"
@@ -79,43 +78,51 @@ export default function AddCampaignPage() {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Donation Close Date <span className="text-red-500">*</span>
+                                Tanggal berakhir <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="date"
-                                required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Planting Event Date <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="date"
-                                required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Poster Image <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="file"
-                                accept="image/*"
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
                             />
                         </div>
                     </div>
-
+                    <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Poster <span className="text-red-500">*</span>
+                            </label>
+                            <label
+                                htmlFor="poster-image-upload"
+                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-leaf-500 transition-colors"
+                            >
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg
+                                        className="w-8 h-8 mb-4 text-gray-500"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 20 16"
+                                    >
+                                        <path
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L7 9m3-3 3 3"
+                                        />
+                                    </svg>
+                                    <p className="mb-2 text-sm text-gray-500">
+                                        <span className="font-semibold">Click to upload</span> or drag and drop
+                                    </p>
+                                    <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                </div>
+                                <input id="poster-image-upload" type="file" accept="image/*" required className="hidden" />
+                            </label>
+                    </div>
                     {/* Description */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Campaign Description <span className="text-red-500">*</span>
+                            Description <span className="text-red-500">*</span>
                         </label>
                         <div className="h-64 mb-12">
                             <ReactQuill
@@ -133,7 +140,7 @@ export default function AddCampaignPage() {
                             className="px-6 py-3 border border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors"
                             onClick={() => window.history.back()}
                         >
-                            Cancel
+                            Batalkan
                         </button>
                         <button
                             type="submit"
@@ -146,7 +153,7 @@ export default function AddCampaignPage() {
                                 </>
                             ) : (
                                 <>
-                                    Create Campaign <i className="bx bx-check"></i>
+                                    Sebarkan <i className='bx bxs-megaphone'></i>
                                 </>
                             )}
                         </button>

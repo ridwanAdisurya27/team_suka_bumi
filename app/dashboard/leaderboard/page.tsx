@@ -23,15 +23,7 @@ export default function LeaderboardPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Leaderboard</h1>
-          <p className="text-gray-500">Top contributors making the world greener.</p>
-        </div>
-        <div className="flex gap-2">
-          <button className="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50">
-            Global
-          </button>
-          <button className="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50">
-            This Month
-          </button>
+          <p className="text-gray-500">Lihat Pahlawan Hijau yang terbaik</p>
         </div>
       </div>
 
@@ -40,9 +32,9 @@ export default function LeaderboardPage() {
           <table className="w-full text-left">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
               <tr>
-                <th className="px-6 py-4 font-medium w-20 text-center">Rank</th>
-                <th className="px-6 py-4 font-medium">Donor / Campaign</th>
-                <th className="px-6 py-4 font-medium text-right">Trees Donated</th>
+                <th className="px-6 py-4 font-medium w-20 text-center">Peringkat</th>
+                <th className="px-6 py-4 font-medium">UserName</th>
+                <th className="px-6 py-4 font-medium text-right">Pohon yang di donasikan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -65,7 +57,7 @@ export default function LeaderboardPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       <Image
-                        src={""}
+                        src={item.avatar}
                         alt={item.name}
                         width={40}
                         height={40}

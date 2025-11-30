@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Yesteryear&display=swap");
 
 @import "tailwindcss";
+@plugin "daisyui";
 
 /* Gunakan format baru Tailwind untuk variabel tema */
 
@@ -9,12 +10,14 @@
 :root {
   --tw-ring-color: #6fbf68 !important;
 }
+
 *,
 ::after,
 ::before,
 ::backdrop {
   --tw-ring-color: #6fbf68 !important;
 }
+
 /* *:focus {
   outline: none !important;
   box-shadow: none !important;
@@ -34,7 +37,8 @@ select:focus {
   --color-leaf-200: #dff0dd;
   --color-leaf-300: #cfe8cc;
   --color-leaf-400: #9fd39a;
-  --color-leaf-500: #6fbf68; /* base */
+  --color-leaf-500: #6fbf68;
+  /* base */
   --color-leaf-700: #2f7a2f;
   --color-leaf-950: #0b120b;
   --color-leaf-975: #061006;
@@ -178,11 +182,11 @@ h6 {
 }
 
 /* Details/FAQ */
-details > summary::-webkit-details-marker {
+details>summary::-webkit-details-marker {
   display: none;
 }
 
-details > summary {
+details>summary {
   list-style-type: none;
   display: flex;
   justify-content: space-between;
@@ -191,25 +195,25 @@ details > summary {
   font-weight: bold;
 }
 
-details > summary::after {
+details>summary::after {
   content: "\ea50";
   font-size: 30px;
   font-family: "boxicons";
   transition: transform 0.2s ease-in-out;
 }
 
-details[open] > summary::after {
+details[open]>summary::after {
   transform: rotate(90deg);
   transition: 0.125s ease-in-out;
 }
 
 details[open],
-details[open] summary ~ p {
+details[open] summary~p {
   /* background-color: #0b120b; */
   color: white;
 }
 
-details[open] summary ~ * {
+details[open] summary~* {
   animation: sweep 0.2s ease-in-out;
 }
 
@@ -270,6 +274,7 @@ details[open] summary ~ * {
 }
 
 @media (min-width: 640px) {
+
   .jumbo-background,
   .jumbo-image {
     width: 87%;
@@ -277,6 +282,7 @@ details[open] summary ~ * {
 }
 
 @media (min-width: 768px) {
+
   .jumbo-background,
   .jumbo-image {
     width: 90%;
@@ -284,6 +290,7 @@ details[open] summary ~ * {
 }
 
 @media (min-width: 1024px) {
+
   .jumbo-background,
   .jumbo-image {
     width: 93%;
@@ -549,6 +556,7 @@ footer li {
     opacity: 0;
     margin-bottom: 5px;
   }
+
   100% {
     opacity: 1;
     margin-bottom: 0;
@@ -559,6 +567,7 @@ footer li {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

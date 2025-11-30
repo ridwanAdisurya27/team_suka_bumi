@@ -5,8 +5,26 @@ import { NextConfig } from "next";
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
   images: {
-    domains: ["lh3.googleusercontent.com", "img.daisyui.com"],
+    dangerouslyAllowSVG: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "img.daisyui.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "ui-avatars.com",
+      },
+    ],
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
