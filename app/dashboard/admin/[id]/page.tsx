@@ -5,17 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 
 
-function DataCreate() {
+function DataCreate({tanggal, username, jumlah, status}: {tanggal: string, username: string, jumlah: number, status: string}) {
   return (
     <>
       <tr className="border border-gray-200 hover:bg-blue-50 cursor-pointer">
-        <td className="border border-gray-200 p-4">April 28, 2016</td>
+        <td className="border border-gray-200 p-4">{tanggal}</td>
         <td className="border border-gray-200 p-4 font-medium text-gray-900">
-          speakers
+          {username}
         </td>
-        <td className="border border-gray-200 p-4">$16.00 - $18.00</td>
+        <td className="border border-gray-200 p-4">Rp. {jumlah.toLocaleString()}</td>
         <td className="border border-gray-200 p-4">
-          <span className="badge !bg-leaf-700 !text-white"> Success </span>
+          <span className="badge !bg-leaf-700 !text-white"> {status} </span>
         </td>
         <td className="border border-gray-200 p-4 text-center cursor-pointer text-gray-400">
           <svg
@@ -38,11 +38,11 @@ function DataCreate() {
   );
 }
 
-function DataShow() {
+function DataShow({campaign}: {campaign: any}) {
   return (
     <>
-      <div className="w-full flex bg-amber-300 text-black">
-        <div className="p-4 flex-10">
+      <div className="w-full border-2 border-gray-200 rounded-xl flex text-black">
+        <div className="flex-10">
           <div className="bg-white rounded-xl shadow-md p-4 max-w-full overflow-x-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-gray-900">
@@ -92,9 +92,17 @@ function DataShow() {
               </thead>
               <tbody>
                 {/* Example usage of DataCreate component as a table row */}
-                <DataCreate />
-                <DataCreate />
-                <DataCreate />
+                {
+                  campaign.donors.map((donation: any) => (
+                    <DataCreate
+                      key={donation.id}
+                      tanggal={donation.date}
+                      username={donation.name}
+                      jumlah={donation.amount}
+                      status={donation.status}
+                    />
+                  ))
+                }
               </tbody>
             </table>
           </div>
@@ -108,10 +116,10 @@ function DataShow() {
 function Description({campaign}: {campaign: any}){
     return(
         <>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                
+              <div className="p-6 col-span-2">
                     <h3 className="text-gray-500 text-sm font-medium mb-2">Total Donasi</h3>
-                    <p className="text-3xl font-bold text-gray-800">Rp {campaign.raised.toLocaleString()}</p>
+                    <p className="text-5xl font-bold text-gray-800">Rp {campaign.raised.toLocaleString()}</p>
                     <div className="w-full bg-gray-100 rounded-full h-2 mt-4">
                         <div
                             className="bg-leaf-500 h-2 rounded-full"
@@ -122,47 +130,40 @@ function Description({campaign}: {campaign: any}){
                         {Math.round((campaign.raised / campaign.target) * 100)}% dari Target Rp {campaign.target.toLocaleString()}
                     </p>
                 </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-gray-500 text-sm font-medium mb-2">Akumulasi Pohon</h3>
-                    <p className="text-3xl font-bold text-gray-800">{campaign.trees}</p>
-                    <p className="text-xs text-leaf-600 mt-1 flex items-center gap-1">
-                        <i className="bx bx-up-arrow-alt"></i> +120 Minggu ini
-                    </p>
+                  {/* Latest Donation */}
+          <div className="bg-gradient-to-r from-leaf-500 to-leaf-700 rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
+            <div className="relative z-10">
+              <h2 className="text-2xl font-bold mb-4">Total Akumulasi</h2>
+              <div className="flex items-center gap-4">
+                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-lg">
+                  <p className="text-xs text-leaf-100">Pohon yang ditanam</p>
+                  <p className="text-xl font-bold">{campaign.trees}</p>
                 </div>
+                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-lg">
+                  <p className="text-xs text-leaf-100">Dalam</p>
+                  <p className="text-xl font-bold">30 hari</p>
+                </div>
+              </div>
+            </div>
+            <i className="bx bxs-tree absolute -bottom-4 -right-4 text-9xl text-white/10"></i>
+          </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-gray-500 text-sm font-medium mb-2">Total Donatur</h3>
-                    <p className="text-3xl font-bold text-gray-800">{campaign.donors.length}</p>
+          <div className="bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
+            <div className="relative z-10">
+              <h2 className="text-2xl font-bold mb-4">Total Donatur</h2>
+              <div className="flex items-center gap-4">
+                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-lg">
+                  <p className="text-xs text-blue-100">Donatur</p>
+                  <p className="text-xl font-bold">{campaign.donors.length}</p>
                 </div>
+              </div>
             </div>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
-                    <h3 className="font-bold text-gray-800">History Donatur</h3>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
-                            <tr>
-                                <th className="px-6 py-3 font-medium">Nama</th>
-                                <th className="px-6 py-3 font-medium">Jumlah</th>
-                                <th className="px-6 py-3 font-medium">Status</th>
-                                <th className="px-6 py-3 font-medium">Tanggal</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {campaign.donors.map((donor) => (
-                                <tr key={donor.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-800">{donor.name}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">Rp {donor.amount.toLocaleString()}</td>
-                                    <td className={donor.status === "Success" ? "px-6 py-4 text-sm text-green-500" : "px-6 py-4 text-sm text-red-500"}>{donor.status}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">{donor.date}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+            <i className="bx bxs-donate-heart bx-flip-horizontal absolute -bottom-4 -right-4 text-9xl text-white/10"></i>
+          </div>
             </div>
+            <DataShow campaign={campaign} />
         </>
     )
 }
@@ -221,7 +222,7 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
             </div>
             {activeTab == "Deskripsi" && <Description campaign={campaign} />}
             {/* Data STart */}
-            {activeTab === "Data" && <DataShow />}
+            {activeTab === "Data" && <DataShow campaign={campaign} />}
             {/* Data ENd */}
         </div>
     );
