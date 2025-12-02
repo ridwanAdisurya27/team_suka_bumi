@@ -19,84 +19,225 @@ function MediaSosial(){
     )
 }
 
-export default class Profile extends Component {
+export default function Profile (){
+    const [isLoading, setIsLoading] = useState(false);
 
-  render() {
-    return (
-    <Root show={true}>
+    const [isPhoneNumber, setIsPhoneNumber] = useState(false);
+
+    const handlePhoneNumberChange = (event: React.ChangeEvent < HTMLInputElement > ) => {
+        const value = event.target.value;
+        if (value.length < 10) {
+            setIsPhoneNumber(true);
+        } else {
+            setIsPhoneNumber(false);
+        }
+    };
+
+    async function handleSubmit(event: React.FormEvent < HTMLFormElement > ) {
+        event.preventDefault();
+        setIsLoading(true);
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        setIsLoading(false);
+        alert("Application submitted successfully! We will review your documents.");
+    }
+  return (
         <>
-        <div className="flex justify-between items-center border-b border-gray-200">
-            <h2 className="text-2xl font-semibold text-gray-800">Profile</h2>
-        </div>
-    <div className="w-full bg-leaf-50 flex flex-col gap-4">
-        <div className="bg-gray-100 max-w-7xl rounded-lg shadow-lg flex">
-            {/*
-            <!-- Sidebar Profile --> */}
-            <div className="w-1/3 border-r border-gray-200 p-8 flex flex-col items-center">
-                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile"
-                    className="rounded-full w-28 h-28 object-cover mb-4" />
-                <button className="btn btn-primary btn-sm p-3"><p className="text-m">
-                    UPLOAD NEW AVATAR
-                </p></button>
+              <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-800">Profil</h1>
+      </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Personal Information */}
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <i className="bx bxs-user text-leaf-500"></i> Detail Pribadi
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nama Lengkap <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="e.g. Yayasan Hijau Indonesia"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nomor Telepon <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="+62 812 3456 7890"
+                  onChange={handlePhoneNumberChange}
+                />
+                {isPhoneNumber && (
+                  <p className="text-red-500 text-sm mt-1">Nomor telepon harus memiliki minimal 10 angka</p>
+                )}
+              </div>
+              <div className="md:col-span-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  KTP / ID Card (JPG, PNG) <span className="text-red-500">*</span>
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
+                  <i className="bx bx-image-add text-3xl text-gray-400 mb-2"></i>
+                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
+                  <p className="text-xs text-gray-400 mt-1">Max file size: 5MB</p>
+                  <input type="file" className="hidden" accept="image/*" required />
+                </div>
+              </div>
+              </div>
             </div>
+          </div>
 
-            {/*
-            <!-- Main Content Form --> */}
-            <form className="flex-1 p-10 space-y-6">
-                <div className="flex justify-between items-center border-b border-gray-200">
-                    <h2 className="text-2xl font-semibold text-gray-800">Info Pribadi</h2>
-                </div>
-                {/*
-                <!-- Basic Info Fields --> */}
-                <div className="grid grid-cols-1 gap-6">
-                    <fieldset className="fieldset">
-                        <legend className="fieldset-legend">Nama</legend>
-                        <input type="text" className="input w-full" placeholder="Type here"  />
-                    </fieldset>
-                </div>
+          <hr className="border-gray-100" />
+          {/* Organization Details */}
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <i className="bx bxs-building-house text-leaf-500"></i> Detail Yayasan
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nama Yayasan <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="e.g. Yayasan Hijau Indonesia"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nomor Telepon <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="+62 812 3456 7890"
+                  onChange={handlePhoneNumberChange}
+                />
+                {isPhoneNumber && (
+                  <p className="text-red-500 text-sm mt-1">Nomor telepon harus memiliki minimal 10 angka</p>
+                )}
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Alamat <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="contact@foundation.org"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  NPWP <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="Nomor Pokok Wajib Pajak"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Media Sosial <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-leaf-500 outline-none transition-all"
+                  placeholder="https://"
+                />
+              </div>
+            </div>
+          </div>
+          <hr className="border-gray-100" />
 
-                <div>
-                    <fieldset className="fieldset">
-                        <legend className="fieldset-legend">Nomor Telepon</legend>
-                        <input type="number" className="input w-full" placeholder="Type here"  />
-                    </fieldset>
+          {/* Document Uploads */}
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <i className="bx bxs-cloud-upload text-leaf-500"></i> Dokumen Yayasan
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Surat Izin Operasional (PDF) <span className="text-red-500">*</span>
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
+                  <i className="bx bx-upload text-3xl text-gray-400 mb-2"></i>
+                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
+                  <p className="text-xs text-gray-400 mt-1">Max file size: 10MB</p>
+                  <input type="file" className="hidden" accept=".pdf" required />
                 </div>
-                {/* Yayasan Info */}
-                <div className="flex justify-between items-center border-b border-gray-200">
-                    <h2 className="text-2xl font-semibold text-gray-800">Info Yayasan</h2>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Surat Pendirian LSM (PDF) <span className="text-red-500">*</span>
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
+                  <i className="bx bx-upload text-3xl text-gray-400 mb-2"></i>
+                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
+                  <p className="text-xs text-gray-400 mt-1">Max file size: 10MB</p>
+                  <input type="file" className="hidden" accept=".pdf" required />
                 </div>
-                <div>
-                    <fieldset className="fieldset">
-                        <legend className="fieldset-legend">Nama Yayasan</legend>
-                        <input type="text" className="input w-full" placeholder="Type here"  />
-                    </fieldset>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Surat Pengesahan Badan Hukum (PDF) <span className="text-red-500">*</span>
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
+                  <i className="bx bx-upload text-3xl text-gray-400 mb-2"></i>
+                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
+                  <p className="text-xs text-gray-400 mt-1">Max file size: 10MB</p>
+                  <input type="file" accept=".pdf" required />
                 </div>
-                <div>
-                    <fieldset className="fieldset">
-                        <legend className="fieldset-legend">Alamat Yayasan</legend>
-                        <input type="text" className="input w-full" placeholder="Type here"  />
-                    </fieldset>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Surat Domisili Yayasan (PDF) <span className="text-red-500">*</span>
+                </label>
+                <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
+                  <i className="bx bx-upload text-3xl text-gray-400 mb-2"></i>
+                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
+                  <p className="text-xs text-gray-400 mt-1">Max file size: 10MB</p>
+                  <input type="file" className="file-input top-0 left-0 w-full h-full opacity-0 absolute" accept=".pdf" required />
                 </div>
-                <div className="grid grid-cols-2 gap-6">
-                    <fieldset className="fieldset">
-                        <legend className="fieldset-legend">NPWP</legend>
-                        <input type="number" className="input w-full" placeholder="Type here"  />
-                    </fieldset>
-                    <fieldset className="fieldset">
-                        <legend className="fieldset-legend">Nomor Telepon</legend>
-                        <input type="text" className="input w-full" placeholder="Type here"  />
-                    </fieldset>
-                </div>
-                <MediaSosial />
-                    <button type="submit" className="mt-4 w-full btn btn-success !text-white">
-                        Simpan </button>
-                {/*
-                <!-- About Me --> */}
-            </form>
-        </div>
-    </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-4">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-leaf-600 hover:bg-leaf-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <i className="bx bx-loader-alt bx-spin"></i> Submitting...
+                </>
+              ) : (
+                <>
+                  Submit Application <i className="bx bx-send"></i>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
         </>
-    </Root>
     );
-  }
 }

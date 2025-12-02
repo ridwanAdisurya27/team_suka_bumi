@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function CampaignUpdatesPage() {
@@ -126,38 +127,43 @@ export default function CampaignUpdatesPage() {
         {/* Filter End */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {updates.map((update) => (
-                    <div key={update.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                        <div className="relative h-48 w-full">
-                            <Image
-                                src={update.image}
-                                alt={update.title}
-                                fill
-                                className="object-cover"
-                            />
-                            <div className="absolute top-4 left-4">
-                                <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-xs font-bold text-leaf-700 rounded-full">
-                                    {update.campaign}
-                                </span>
-                            </div>
-                        </div>
-                        <div className="p-6">
-                            <div className="flex items-center gap-2 mb-3 text-xs text-gray-500">
-                                <i className="bx bx-calendar"></i>
-                                <span>{update.date}</span>
-                                <span className="mx-1">•</span>
-                                <span>{update.organizer}</span>
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-800 mb-2">{update.title}</h3>
-                            <p className="text-gray-600 text-sm mb-4 line-clamp-3">{update.content}</p>
-                            <div className="flex flex-wrap gap-2">
-                                {update.tags.map((tag) => (
-                                    <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">
-                                        #{tag}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                    <Link
+                    href={`/dashboard/campaigns/${update.id}`}
+                    key={update.id}
+                    >
+                      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+                          <div className="relative h-48 w-full">
+                              <Image
+                                  src={update.image}
+                                  alt={update.title}
+                                  fill
+                                  className="object-cover"
+                              />
+                              <div className="absolute top-4 left-4">
+                                  <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-xs font-bold text-leaf-700 rounded-full">
+                                      {update.campaign}
+                                  </span>
+                              </div>
+                          </div>
+                          <div className="p-6">
+                              <div className="flex items-center gap-2 mb-3 text-xs text-gray-500">
+                                  <i className="bx bx-calendar"></i>
+                                  <span>{update.date}</span>
+                                  <span className="mx-1">•</span>
+                                  <span>{update.organizer}</span>
+                              </div>
+                              <h3 className="text-xl font-bold text-gray-800 mb-2">{update.title}</h3>
+                              <p className="text-gray-600 text-sm mb-4 line-clamp-3">{update.content}</p>
+                              <div className="flex flex-wrap gap-2">
+                                  {update.tags.map((tag) => (
+                                      <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">
+                                          #{tag}
+                                      </span>
+                                  ))}
+                              </div>
+                          </div>
+                      </div>
+                    </Link>
                 ))}
           </div>
       </div>

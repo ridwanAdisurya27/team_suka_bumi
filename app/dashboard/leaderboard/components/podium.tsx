@@ -12,7 +12,7 @@ function Podium({ item, index }: PodiumProps) {
   const heightClass = index === 0 ? "h-32" : index === 1 ? "h-28" : "h-24";
 
   return (
-    <button className="h-60 flex-1 flex flex-row items-end">
+    <div className="h-60 flex-1 flex flex-row items-end text-black">
       <div key={index} className="flex flex-1 flex-col gap-2">
         <div className="flex flex-col items-center">
           <div className="avatar">
@@ -24,14 +24,12 @@ function Podium({ item, index }: PodiumProps) {
           <span>{item.amount}</span>
         </div>
         <div
-          className={`bg-leaf-500 w-full rounded-box p-4 ${heightClass} flex items-center justify-center`}
+          className={`${index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-500' : 'bg-orange-500'} w-full rounded-box p-4 ${heightClass} flex items-center justify-center`}
         >
-          <div className="text-4xl font-medium text-white tabular-nums mr-4">
-            {index + 1}
-          </div>
+          <span className="text-4xl font-bold text-white">{index + 1}</span>
         </div>
       </div>
-    </button>
+    </div>
   );
 }
 

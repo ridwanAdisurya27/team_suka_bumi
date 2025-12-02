@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Podium from "./components/podium";
+import Marchindise from "@/public/marchindise.png"
 
 export default function LeaderboardPage() {
   // Mock Leaderboard Data
@@ -24,6 +26,45 @@ export default function LeaderboardPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Leaderboard</h1>
           <p className="text-gray-500">Lihat Pahlawan Hijau yang terbaik</p>
+        </div>
+      </div>
+
+      {/* Podium Section */}
+      <div className="flex justify-center gap-4 items-end mb-8 h-64">
+        {/* Rank 2 */}
+        <div className="">
+          <Podium
+            item={{
+              name: leaderboard[1].name,
+              image: leaderboard[1].avatar,
+              amount: leaderboard[1].trees
+            }}
+            index={1}
+          />
+        </div>
+
+        {/* Rank 1 */}
+        <div className="">
+          <Podium
+            item={{
+              name: leaderboard[0].name,
+              image: leaderboard[0].avatar,
+              amount: leaderboard[0].trees
+            }}
+            index={0}
+          />
+        </div>
+
+        {/* Rank 3 */}
+        <div className="">
+          <Podium
+            item={{
+              name: leaderboard[2].name,
+              image: leaderboard[2].avatar,
+              amount: leaderboard[2].trees
+            }}
+            index={2}
+          />
         </div>
       </div>
 
@@ -64,7 +105,7 @@ export default function LeaderboardPage() {
                         className="rounded-full"
                       />
                       <div>
-                        <p className={`font-medium ${item.isUser ? 'text-leaf-800' : 'text-gray-800'}`}>
+                        <p className={`font-medium ${item.isUser ? 'text-green-800' : 'text-gray-800'}`}>
                           {item.name} {item.isUser && "(You)"}
                         </p>
                       </div>
@@ -78,6 +119,11 @@ export default function LeaderboardPage() {
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="w-full bg-green-500 rounded-xl p-4 border-4 border-solid border-yellow-500">
+        <p className="text-xl font-bold">Ayo Jadilah Pahlawan Hijau dan dapatkan Marchindise Menarik! </p>
+        <p>Leaderboard Di reset tiap Semester masih banyak waktu untuk berbagi!</p>
+        <img src="" alt="" />
       </div>
     </div>
   );

@@ -1,7 +1,11 @@
+"use client"
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function AdminPage() {
+  const [mitra, setMitra] = useState("");
   // Mock Campaign Data
   const campaigns = [
     {
@@ -47,7 +51,33 @@ export default function AdminPage() {
           <i className="bx bx-plus"></i> Buat Kampanye
         </Link>
       </div>
-
+      <div className="flex items-center gap-4 w-full my-4">
+        {/* Search Bar */}
+                        <label className="input w-full bg-white border-2 border-leaf-500 rounded-2xl">
+                          <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none"
+                              stroke="black">
+                              <circle cx="11" cy="11" r="8"></circle>
+                              <path d="m21 21-4.3-4.3"></path>
+                            </g>
+                          </svg>
+                          <input type="search" required placeholder="Search" />
+                        </label>
+          {/* Filter */}
+              <div className="flex gap-4">
+                {/* <select
+                value={mitra}
+                onChange={(e) => setMitra(e.target.value)}
+                className="border border-leaf-400 rounded-lg px-6 py-3 text-sm text-leaf-950 bg-white focus:ring-2 focus:ring-leaf-500"
+              >
+                <option value="">Pilih Mitra</option>
+                <option value="pemerintah">Pemerintah</option>
+                <option value="swasta">Swasta</option>
+                <option value="internasional">Internasional</option>
+                <option value="komunitas">Komunitas Lokal</option>
+              </select> */}
+              </div>
+      </div>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">

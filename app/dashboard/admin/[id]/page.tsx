@@ -3,6 +3,10 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import "react-quill-new/dist/quill.snow.css";
+
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 
 function DataCreate({tanggal, username, jumlah, status}: {tanggal: string, username: string, jumlah: number, status: string}) {
@@ -46,12 +50,9 @@ function DataShow({campaign}: {campaign: any}) {
           <div className="bg-white rounded-xl shadow-md p-4 max-w-full overflow-x-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-gray-900">
-                Ringkasan Keuangan
+                Tabel Histori
               </h2>
               <div className="flex gap-4">
-                <button className="btn !bg-leaf-700 !text-white">
-                  Kirim Bukti
-                </button>
                 <button className="btn !bg-leaf-700 !text-white">
                   Export ke CSV
                 </button>
@@ -113,7 +114,7 @@ function DataShow({campaign}: {campaign: any}) {
 }
 
 
-function Description({campaign}: {campaign: any}){
+function Data({campaign}: {campaign: any}){
     return(
         <>
                 
@@ -168,6 +169,120 @@ function Description({campaign}: {campaign: any}){
     )
 }
 
+function CampaignData({campaign}: {campaign: any}) {
+    const [description, setDescription] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        setIsLoading(true);
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        setIsLoading(false);
+        alert("Campaign created successfully!");
+    }
+  return(
+    <>
+    <div className="flex-1">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Basic Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Judul Kampanye 
+                            </label>
+                            <h3 className="text-2xl font-bold">{campaign.title}</h3>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Target Donasi 
+                            </label>
+                            <h3 className="text-xl">Rp{campaign.target.toLocaleString()}</h3>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Lokasi
+                            </label>
+                            <h3 className="text-xl">{campaign.location}</h3>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Tanggal Mulai 
+                            </label>
+                            <h3 className="text-xl">{campaign.startDate}</h3>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Tanggal berakhir 
+                            </label>
+                            <h3 className="text-xl">{campaign.plantingDate}</h3>
+                        </div>
+                    </div>
+                    <div>
+                    </div>
+                    {/* Description */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Description 
+                        </label>
+                        <p className="text-sm leading-relaxed">
+                            Borneo, tanah dengan keanekaragaman hayati yang tak tertandingi, adalah medan pertempuran penting bagi konservasi lingkungan. Aktivitas hijau di sini sering berfokus pada upaya reboisasi, memulihkan hutan hujan yang terdegradasi yang merupakan habitat vital bagi orangutan, gajah kerdil, dan spesies lainnya. Inisiatif ini melibatkan masyarakat lokal dalam menanam pohon asli, membangun praktik agroforestri berkelanjutan, dan melindungi hutan yang ada dari penebangan liar dan ekspansi kelapa sawit. Upaya-upaya tersebut sangat penting dalam memerangi perubahan iklim dan melestarikan warisan ekologi unik pulau ini untuk generasi mendatang.
+                        </p>
+                    </div>
+
+                    <div className="pt-4 flex gap-4">
+                        <button
+                            type="button"
+                            className="px-6 py-3 border border-gray-300 text-gray-700  w-full font-bold rounded-lg hover:bg-gray-50 transition-colors"
+                            onClick={() => window.history.back()}
+                        >
+                            <i className="bx bxs-edit"></i> Edit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </>
+  )
+}
+
+function Description({campaign}: {campaign: any}){
+  return(
+    <>
+      <div className="p-4 text-black flex gap-4">
+        <div className="flex flex-col w-sm items-center bg-white rounded-2xl border-2 border-gray-100 p-4 h-max">
+          <Image src="/assets/img/item/sinarmas.jpeg" alt="" width={350} height={100}
+            className="object-cover rounded-xl mt-4" />
+
+          <h3 className="text-[8rem] mt-4">
+            Menanam kembali kertas menjadi pohon bersama PT. Sinarmas
+          </h3>
+
+          <div className="mt-4 inline-flex justify-between w-full">
+            <p> Target Terkumpul </p>
+            <p className="font-bold"> Rp 30.000.000</p>
+          </div>
+
+          <div className="w-full bg-gray-100 rounded-full h-2 mt-4">
+            <div className="bg-leaf-500 h-2 rounded-full"
+              style={{ width: `${(campaign.raised / campaign.target) * 100}%` }}></div>
+          </div>
+
+          <a href="/campaign/charity" className="btn !bg-leaf-700 text-white mt-4 w-full">
+            Check
+          </a>
+        </div>
+        <CampaignData campaign={campaign} />
+      </div>
+    </>
+  )
+}
+
 export default function CampaignDetailPage({ params }: { params: { id: string } }) {
     // Mock Campaign Detail Data (In a real app, fetch based on params.id)
     const campaign = {
@@ -175,6 +290,7 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
         title: "Reforest Borneo",
         status: "Active",
         location: "East Kalimantan, Indonesia",
+        startDate: "2024-12-01",
         plantingDate: "2024-12-15",
         raised: 15000000,
         target: 50000000,
@@ -206,9 +322,6 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    <button className="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2">
-                        <i className="bx bx-edit"></i> Edit
-                    </button>
                     <div className="flex p-0 border-2 border-gray-200 text-black rounded-lg ">
                         <div className={`cursor-pointer rounded-l-lg p-2 px-4 transition-all text-sm font-medium ${activeTab === "Deskripsi" ? "bg-leaf-500 text-white" : ""}`} onClick={() => setActiveTab("Deskripsi")}>
                             Deskripsi
@@ -222,7 +335,7 @@ export default function CampaignDetailPage({ params }: { params: { id: string } 
             </div>
             {activeTab == "Deskripsi" && <Description campaign={campaign} />}
             {/* Data STart */}
-            {activeTab === "Data" && <DataShow campaign={campaign} />}
+            {activeTab == "Data" && <Data campaign={campaign} />}
             {/* Data ENd */}
         </div>
     );
