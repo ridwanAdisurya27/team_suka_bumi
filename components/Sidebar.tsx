@@ -3,11 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const isAdmin = pathname?.startsWith("/dashboard/admin");
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout(); // Panggil fungsi logout
+    console.log("Logout");
+    window.location.href = "/login";
+  };
+
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -53,11 +62,11 @@ export default function Sidebar() {
 
       {/* Sidebar Container */}
       <button
-          className= {`fixed right-0 top-4 p-2 bg-green-500! text-black z-50 justify-center items-center w-[50px] h-[50px] rounded-md flex focus:border-leaf-400 ${window.innerWidth >= 768? "hidden" : ""}`}
-          onClick={toggleSidebar}
-        >
-          <i className={`bx ${isOpen ? "bx-x" : "bx-menu"} text-2xl`}></i>
-        </button>
+        className={`fixed right-0 top-4 p-2 bg-green-500! text-black z-50 justify-center items-center w-[50px] h-[50px] rounded-md flex focus:border-leaf-400 ${window.innerWidth >= 768 ? "hidden" : ""}`}
+        onClick={toggleSidebar}
+      >
+        <i className={`bx ${isOpen ? "bx-x" : "bx-menu"} text-2xl`}></i>
+      </button>
       <aside
         className={`fixed ${isOpen || window.innerWidth >= 768 ? "left-0" : "left-[-500px]"} top-0 h-full w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out z-50 `}
       >
@@ -78,8 +87,8 @@ export default function Sidebar() {
                   key={item.href}
                   href={item.href}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive
-                      ? "bg-leaf-100 text-leaf-700 font-medium"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-leaf-600"
+                    ? "bg-leaf-100 text-leaf-700 font-medium"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-leaf-600"
                     }`}
                   onClick={() => setIsOpen(false)}
                 >
@@ -97,8 +106,8 @@ export default function Sidebar() {
                     key={item.href}
                     href={item.href}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 ${isActive
-                        ? "bg-leaf-100 text-leaf-700 font-medium"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-leaf-600"
+                      ? "bg-leaf-100 text-leaf-700 font-medium"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-leaf-600"
                       }`}
                     onClick={() => setIsOpen(false)}
                   >
@@ -112,7 +121,7 @@ export default function Sidebar() {
 
           {/* Logout Button */}
           <div className="p-4 border-t border-gray-100">
-            <button className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-200">
+            <button className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-200" onClick={handleLogout}>
               <i className="bx bx-log-out text-xl"></i>
               <span>Logout</span>
             </button>

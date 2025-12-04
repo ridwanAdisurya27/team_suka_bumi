@@ -137,7 +137,7 @@ export default function LeaderboardPage() {
         </div>
       </div>
       <div className={`fixed bottom-0 right-0 md:right-2 ${isOpen ? "w-[85%]" : "w-full"}`}>
-        <div className="relative w-full bg-green-500 rounded-xl p-4 border-4 border-solid border-yellow-500">
+        <div className="relative w-full bg-green-500 rounded-xl px-8 py-4 border-4 border-solid border-yellow-500">
           <p className="md:text-3xl! text-lg font-bold">Ayo Jadilah Pahlawan Hijau dan <br className="md:hidden"/>dapatkan Marchindise Menarik! </p>
           <p className="md:text-lg! text-sm">Leaderboard Di reset tiap Semester masih banyak waktu untuk berbagi!</p>
           <Image src={Marchindise} alt="Merchandise" width={isOpen ? 300 : 1} height={isOpen ? 300: 1} lazyRoot="lazy" className="absolute right-0 bottom-10" />

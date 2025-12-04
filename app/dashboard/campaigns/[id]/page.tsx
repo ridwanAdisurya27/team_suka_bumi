@@ -138,7 +138,7 @@ export default function Page({ params }: PageProps) {
                 className="flex-1 bg-white border border-green-600 text-green-700 hover:bg-green-50 py-3 rounded-lg font-medium flex items-center justify-center gap-2"
               >
                 <span>Bagikan</span>
-                <span>🌬</span>
+                <span> <i className="bx bxs-megaphone"></i> </span>
               </button>
             </div>
 
@@ -286,7 +286,7 @@ export default function Page({ params }: PageProps) {
             <button
               type="submit"
               disabled={!selectedFile}
-              className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              className={`w-full ${!selectedFile ? "bg-gray-400 text-black" : "bg-green-600! text-white"} py-3 rounded-lg font-semibold hover:bg-green-700 disabled:cursor-not-allowed transition-colors`}
             >
               Konfirmasi Donasi {jumlahPohon} Pohon
             </button>

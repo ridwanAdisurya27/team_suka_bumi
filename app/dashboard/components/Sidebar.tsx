@@ -36,6 +36,8 @@ export default function Sidebar({ show = false }) {
   const handleLogout = () => {
     logout(); // Panggil fungsi logout
     closeMenu();
+    console.log("Logout");
+    window.location.href = "/login";
   };
 
   const toggleTextVisibility = () => {
@@ -51,9 +53,8 @@ export default function Sidebar({ show = false }) {
   return (
     <div
       ref={sidebarRef}
-      className={`flex flex-col ${
-        isTextVisible ? "w-60" : "w-20"
-      } transition-all duration-300`}
+      className={`flex flex-col ${isTextVisible ? "w-60" : "w-20"
+        } transition-all duration-300`}
     >
       <div className="flex flex-row p-4 width-full items-center justify-between">
         {/* Toggle button */}
@@ -74,11 +75,10 @@ export default function Sidebar({ show = false }) {
       <ul className={`p-4 h-screen menu ${!isTextVisible ? "px-2" : ""}`}>
         <li className="space-y-2">
           <Link
-            className={`${isActive("/dashboard")} flex items-center ${
-              !isTextVisible ? "justify-center" : "space-x-3"
-            } p-2 hover:bg-leaf-100 transition-colors`}
+            className={`${isActive("/dashboard")} flex items-center ${!isTextVisible ? "justify-center" : "space-x-3"
+              } p-2 hover:bg-leaf-100 transition-colors`}
             href="/dashboard"
-            onClick={() => {}}
+            onClick={() => { }}
             title="Dashboard"
           >
             <span className="material-symbols-rounded">dashboard</span>
@@ -86,11 +86,10 @@ export default function Sidebar({ show = false }) {
           </Link>
 
           <Link
-            className={`${isActive("/dashboard/campaign")} flex items-center ${
-              !isTextVisible ? "justify-center" : "space-x-3"
-            } p-2 hover:bg-leaf-100 transition-colors`}
+            className={`${isActive("/dashboard/campaign")} flex items-center ${!isTextVisible ? "justify-center" : "space-x-3"
+              } p-2 hover:bg-leaf-100 transition-colors`}
             href="/dashboard/campaign"
-            onClick={() => {}}
+            onClick={() => { }}
             title="Kampanye"
           >
             <span className="material-symbols-rounded">volunteer_activism</span>
@@ -100,11 +99,10 @@ export default function Sidebar({ show = false }) {
           <Link
             className={`${isActive(
               "/dashboard/leaderboard"
-            )} flex items-center ${
-              !isTextVisible ? "justify-center" : "space-x-3"
-            } p-2 hover:bg-leaf-100 transition-colors`}
+            )} flex items-center ${!isTextVisible ? "justify-center" : "space-x-3"
+              } p-2 hover:bg-leaf-100 transition-colors`}
             href="/dashboard/leaderboard"
-            onClick={() => {}}
+            onClick={() => { }}
             title="LeaderBoard"
           >
             <span className="material-symbols-rounded">leaderboard</span>
@@ -112,11 +110,10 @@ export default function Sidebar({ show = false }) {
           </Link>
 
           <Link
-            className={`${isActive("/dashboard/upgrade")} flex items-center ${
-              !isTextVisible ? "justify-center" : "space-x-3"
-            } p-2 hover:bg-leaf-100 transition-colors`}
+            className={`${isActive("/dashboard/upgrade")} flex items-center ${!isTextVisible ? "justify-center" : "space-x-3"
+              } p-2 hover:bg-leaf-100 transition-colors`}
             href="/dashboard/upgrade"
-            onClick={() => {}}
+            onClick={() => { }}
             title="Upgrade"
           >
             <span className="material-symbols-rounded">
@@ -126,11 +123,10 @@ export default function Sidebar({ show = false }) {
           </Link>
 
           <Link
-            className={`${isActive("/dashboard/admin")} flex items-center ${
-              !isTextVisible ? "justify-center" : "space-x-3"
-            } p-2 hover:bg-leaf-100 transition-colors`}
+            className={`${isActive("/dashboard/admin")} flex items-center ${!isTextVisible ? "justify-center" : "space-x-3"
+              } p-2 hover:bg-leaf-100 transition-colors`}
             href="/dashboard/admin"
-            onClick={() => {}}
+            onClick={() => { }}
             title="Admin"
           >
             <span className="material-symbols-rounded">person</span>
@@ -142,11 +138,10 @@ export default function Sidebar({ show = false }) {
               <Link
                 className={`${isActive(
                   "/dashboard/admin/data"
-                )} flex items-center ${
-                  !isTextVisible ? "justify-center" : "space-x-3"
-                } p-2 hover:bg-leaf-100 transition-colors`}
+                )} flex items-center ${!isTextVisible ? "justify-center" : "space-x-3"
+                  } p-2 hover:bg-leaf-100 transition-colors`}
                 href="/dashboard/admin/data"
-                onClick={() => {}}
+                onClick={() => { }}
                 title="Data"
               >
                 <span className="material-symbols-rounded">
@@ -158,11 +153,10 @@ export default function Sidebar({ show = false }) {
               <Link
                 className={`${isActive(
                   "/dashboard/admin/campaign"
-                )} flex items-center ${
-                  !isTextVisible ? "justify-center" : "space-x-3"
-                } p-2 hover:bg-leaf-100 transition-colors`}
+                )} flex items-center ${!isTextVisible ? "justify-center" : "space-x-3"
+                  } p-2 hover:bg-leaf-100 transition-colors`}
                 href="/dashboard/admin/campaign"
-                onClick={() => {}}
+                onClick={() => { }}
                 title="Campaign"
               >
                 <span className="material-symbols-rounded">
@@ -173,11 +167,10 @@ export default function Sidebar({ show = false }) {
               <Link
                 className={`${isActive(
                   "/dashboard/admin/profile"
-                )} flex items-center ${
-                  !isTextVisible ? "justify-center" : "space-x-3"
-                } p-2 hover:bg-leaf-100 transition-colors`}
+                )} flex items-center ${!isTextVisible ? "justify-center" : "space-x-3"
+                  } p-2 hover:bg-leaf-100 transition-colors`}
                 href="/dashboard/admin/profile"
-                onClick={() => {}}
+                onClick={() => { }}
                 title="Campaign"
               >
                 <span className="material-symbols-rounded">
@@ -189,10 +182,9 @@ export default function Sidebar({ show = false }) {
           )}
           <button
             className={`${isActive(
-                  "/dashboard/admin/logout"
-                )} flex items-center ${
-                  !isTextVisible ? "justify-center" : "space-x-3"
-                } p-2 hover:bg-leaf-100 transition-colors`}
+              "/dashboard/admin/logout"
+            )} flex items-center ${!isTextVisible ? "justify-center" : "space-x-3"
+              } p-2 hover:bg-leaf-100 transition-colors`}
             onClick={handleLogout}
           >
             <span className="material-symbols-rounded">logout</span>
