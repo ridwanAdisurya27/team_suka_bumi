@@ -1,79 +1,84 @@
 import { NextRequest, NextResponse } from "next/server";
+import { db } from "../../../lib/firebase"; // Import dari firebase client
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-
     const textFields: Record<string, string> = {};
-    const fileFields: Record<string, File> = {};
 
-    console.log("=== RAW FORM DATA ===");
+    // Extract text fields
+    const textFieldNames = [
+      "fullName",
+      "phoneNumber",
+      "foundationName",
+      "foundationPhone",
+      "foundationAddress",
+      "npwp",
+      "socialMedia",
+    ];
 
-    for (const [key, value] of formData.entries()) {
-      console.log("FIELD:", key, "VALUE:", value);
-
-      if (typeof value === "string") {
-        textFields[key] = value;
-      } else if (value instanceof Blob) {
-        fileFields[key] = value as File;
-        console.log(`➡ FILE FIELD DETECTED: ${key}, size=${value.size}`);
-      }
+    // Collect all text inputs
+    for (const fieldName of textFieldNames) {
+      const value = formData.get(fieldName);
+      textFields[fieldName] = typeof value === "string" ? value : "";
     }
 
-    console.log("TEXT FIELDS:", textFields);
-    console.log("FILE FIELDS:", Object.keys(fileFields));
+    // Get email for query (from hidden input)
+    const myemail = formData.get("myemail");
+    const userEmail = typeof myemail === "string" ? myemail : "";
 
-    // Upload semua file sequential
-    const uploadedFiles: Record<string, string> = {};
-
-    for (const [fieldName, file] of Object.entries(fileFields)) {
+    // Update user data in Firebase if email exists
+    if (userEmail) {
       try {
-        const fd = new FormData();
-        fd.append("file", file); // HARUS pakai key "file"
+        // Query user by email
+        const usersRef = collection(db, "usersv2");
+        const q = query(usersRef, where("email", "==", userEmail));
+        const snapshot = await getDocs(q);
 
-        console.log(`Uploading file: ${fieldName}`);
+        if (!snapshot.empty) {
+          // Get first matching document (assuming email is unique)
+          const userDoc = snapshot.docs[0];
 
-        const res = await fetch(`${getBaseUrl()}/api/upload`, {
-          method: "POST",
-          body: fd,
-        });
+          // Update the document
+          await updateDoc(userDoc.ref, {
+            isYayasan: "true",
+            name: textFields.fullName || "",
+            role: "yayasan",
+            yayasanLoc: textFields.foundationAddress || "",
+            yayasanName: textFields.foundationName || "",
+            yayasanTel: textFields.foundationPhone || "",
+            yayasanNPWP: textFields.npwp || "",
+            yayasanSoc: textFields.socialMedia || "",
+            updatedAt: new Date().toISOString(),
+          });
 
-        if (!res.ok) {
-          console.error(`UPLOAD FAILED (${fieldName})`, await res.text());
-          uploadedFiles[fieldName] = "";
-          continue;
-        }
-
-        const json = await res.json();
-
-        if (json?.success && json?.result?.file) {
-          uploadedFiles[fieldName] = json.result.file;
+          console.log(`✅ Updated user: ${userEmail} to yayasan role`);
         } else {
-          uploadedFiles[fieldName] = "";
+          console.log(`❌ User with email ${userEmail} not found`);
         }
-
-        console.log(`✔ UPLOADED: ${fieldName} => ${uploadedFiles[fieldName]}`);
-      } catch (uploadErr) {
-        console.error(`UPLOAD ERROR (${fieldName})`, uploadErr);
-        uploadedFiles[fieldName] = "";
+      } catch (firebaseError: any) {
+        console.error("Firebase update error:", firebaseError);
+        // Continue with response even if Firebase update fails
       }
+    } else {
+      console.log("❌ No email provided for update");
     }
 
-    const mergedResult = {
-      ...textFields,
-      ...uploadedFiles,
-    };
-
-    console.log("=== FINAL MERGED RESULT ===", mergedResult);
-
+    // Return success response
     return NextResponse.json({
       success: true,
       message: "Upgrade data processed successfully",
-      receivedData: mergedResult,
-      uploadedFiles,
-      totalUploaded: Object.keys(uploadedFiles).length,
+      receivedData: textFields,
+      userUpdated: !!userEmail,
       timestamp: new Date().toISOString(),
     });
   } catch (err: any) {
@@ -83,13 +88,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-function getBaseUrl() {
-  if (process.env.NODE_ENV === "development") {
-    return process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:4000";
-  }
-  return (
-    process.env.NEXT_PUBLIC_BASE_URL || "https://your-production-domain.com"
-  );
 }

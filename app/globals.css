@@ -50,6 +50,7 @@ select:focus {
 /* Base Styles */
 html {
   overflow-x: hidden;
+  color: rgb(4, 4, 4);
 }
 
 body {
@@ -182,11 +183,11 @@ h6 {
 }
 
 /* Details/FAQ */
-details>summary::-webkit-details-marker {
+details > summary::-webkit-details-marker {
   display: none;
 }
 
-details>summary {
+details > summary {
   list-style-type: none;
   display: flex;
   justify-content: space-between;
@@ -195,25 +196,25 @@ details>summary {
   font-weight: bold;
 }
 
-details>summary::after {
+details > summary::after {
   content: "\ea50";
   font-size: 30px;
   font-family: "boxicons";
   transition: transform 0.2s ease-in-out;
 }
 
-details[open]>summary::after {
+details[open] > summary::after {
   transform: rotate(90deg);
   transition: 0.125s ease-in-out;
 }
 
 details[open],
-details[open] summary~p {
+details[open] summary ~ p {
   /* background-color: #0b120b; */
   color: white;
 }
 
-details[open] summary~* {
+details[open] summary ~ * {
   animation: sweep 0.2s ease-in-out;
 }
 
@@ -274,7 +275,6 @@ details[open] summary~* {
 }
 
 @media (min-width: 640px) {
-
   .jumbo-background,
   .jumbo-image {
     width: 87%;
@@ -282,7 +282,6 @@ details[open] summary~* {
 }
 
 @media (min-width: 768px) {
-
   .jumbo-background,
   .jumbo-image {
     width: 90%;
@@ -290,7 +289,6 @@ details[open] summary~* {
 }
 
 @media (min-width: 1024px) {
-
   .jumbo-background,
   .jumbo-image {
     width: 93%;

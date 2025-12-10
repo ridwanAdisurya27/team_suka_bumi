@@ -1,12 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [localData, setLocalData] = useState<any>(null);
+  // const localData = JSON.parse(localStorage.getItem("user") ?? "");
   const pathname = usePathname();
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("user");
+      if (stored) {
+        setLocalData(JSON.parse(stored));
+      }
+    } catch (err) {
+      console.error("Error parsing localData:", err);
+      setLocalData(null);
+    }
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -18,6 +31,10 @@ export default function Navbar() {
 
   const isActive = (path: string) => {
     return pathname === path ? "navlink active" : "navlink";
+  };
+
+  let isLogin = () => {
+    return !!(localData?.email && localData?.photo);
   };
 
   return (
@@ -83,7 +100,7 @@ export default function Navbar() {
                 Donasi
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 href="/login"
                 className={isActive("/login")}
@@ -91,7 +108,28 @@ export default function Navbar() {
               >
                 Login
               </Link>
-            </li>
+            </li> */}
+            {isLogin() ? (
+              <li>
+                <Link
+                  href="/dashboard"
+                  className={isActive("/dashboard")}
+                  onClick={closeMenu}
+                >
+                  Dashboard
+                </Link>
+              </li>
+            ) : (
+              <li>
+                <Link
+                  href="/login"
+                  className={isActive("/login")}
+                  onClick={closeMenu}
+                >
+                  Login
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>

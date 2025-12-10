@@ -28,49 +28,56 @@ export default function LoginPage() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
+      const userRef = doc(db, "usersv2", user.uid);
 
-      // Reference ke document user
-      const userRef = doc(db, "users", user.uid);
-
-      // Cek apakah user sudah ada di Firestore
       const userDoc = await getDoc(userRef);
 
       let userData;
 
       if (!userDoc.exists()) {
-        // Jika user belum ada, buat document baru
         userData = {
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-          phone: null,
-          createdAt: Date.now(),
-          accountType: "donatur", // basic | upgraded
-          verificationStatus: "none", // none | pending | approved | rejected
-        };
+          createdAt: new Date().toISOString(), // string format ISO
+          email: user.email || "",
+          isYayasan: "false", // default false karena donatur
+          name: user.displayName || "",
+          photo: user.photoURL || "",
+          role: "donatur", // role pertama sebagai donatur
+          yayasanLoc: "", // string kosong
+          yayasanName: "", // string kosong
+          yayasanTel: "",
+          yayasanNPWP: "",
 
-        // Simpan ke Firestore
+          lastDonationTimestamp: "",
+          lastUpdatedRank: "",
+          rank: 0,
+          totalDonation: 0,
+        };
         await setDoc(userRef, userData);
       } else {
-        // Jika user sudah ada, ambil data dari Firestore
         userData = userDoc.data();
-      }
+        const updateData: any = {};
 
-      // Simpan ke localStorage
+        if (!userData.createdAt)
+          updateData.createdAt = new Date().toISOString();
+        if (!userData.isYayasan) updateData.isYayasan = "false";
+        if (!userData.role) updateData.role = "donatur";
+        if (!userData.yayasanLoc) updateData.yayasanLoc = "";
+        if (!userData.yayasanName) updateData.yayasanName = "";
+
+        if (Object.keys(updateData).length > 0) {
+          await setDoc(userRef, updateData, { merge: true });
+          userData = { ...userData, ...updateData };
+        }
+      }
       localStorage.setItem("user", JSON.stringify(userData));
 
-      // Redirect ke dashboard
       router.push("/dashboard");
     } catch (error: any) {
       console.error("Login error:", error);
-      // Handle error (tampilkan notifikasi, dll)
     } finally {
       setIsLoading(false);
     }
   };
-
-  // JSX code akan mengikuti di sini...
 
   return (
     <div className="bg-leaf-50 w-screen min-h-screen md:min-h-1 md:h-screen relative flex login-page justify-center items-center">

@@ -4,7 +4,7 @@ import Jumbotron from "@/components/Jumbotron";
 import Navbar from "@/components/Navbar";
 import TabSection from "@/app/campaign/charity/TabSection";
 import Modal from "@/components/Modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface PageProps {
   params: { name: string };
@@ -17,6 +17,21 @@ export default function Page({ params }: PageProps) {
   const [jumlahPohon, setJumlahPohon] = useState<number>(1);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLinkCopied, setIsLinkCopied] = useState<boolean>(false);
+  const [localData, setLocalData] = useState<any>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("user");
+      if (stored) {
+        setLocalData(JSON.parse(stored));
+      }
+    } catch (err) {
+      console.warn("LocalStorage parse failed:", err);
+    } finally {
+      setIsAuthReady(true);
+    }
+  }, []);
 
   const handleDonasiClick = () => {
     setActiveModal("donasi");
@@ -176,6 +191,28 @@ export default function Page({ params }: PageProps) {
           <h2 className="text-2xl font-bold text-green-800 mb-6 text-center">
             Donasi Pohon 🌱
           </h2>
+
+          {isAuthReady && (
+            <div
+              className={`text-sm p-3 rounded-lg text-center mb-6 ${
+                localData?.email
+                  ? "bg-green-100 text-green-700"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {localData?.email ? (
+                <>
+                  Anda akan berdonasi menggunakan akun{" "}
+                  <strong>{localData.email}</strong>
+                </>
+              ) : (
+                <>
+                  Anda belum login, silahkan login terlebih dahulu atau
+                  berdonasi secara anonim
+                </>
+              )}
+            </div>
+          )}
 
           <form onSubmit={handleSubmitDonasi} className="space-y-6">
             {/* Input Jumlah Pohon */}

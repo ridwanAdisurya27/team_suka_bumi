@@ -1,139 +1,389 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+interface Campaign {
+  id: string;
+  campaignId: string;
+  judul: string;
+  status: string;
+  target_donasi: number;
+  total_donasi: number;
+  total_pohon: number;
+  total_donatur: number;
+  progress_percentage: number;
+  raised: number;
+  target: number;
+  trees: number;
+  poster_url: string;
+  lokasi: string;
+  jenis_pohon: string;
+  created_at: Date | null;
+  updated_at: Date | null;
+}
 
 export default function AdminPage() {
-  const [mitra, setMitra] = useState("");
-  // Mock Campaign Data
-  const campaigns = [
-    {
-      id: 1,
-      title: "Reforest Borneo",
-      status: "Active",
-      raised: 15000000,
-      target: 50000000,
-      trees: 1500,
-      image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-      id: 2,
-      title: "Urban Green Jakarta",
-      status: "Planning",
-      raised: 5000000,
-      target: 25000000,
-      trees: 200,
-      image: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-      id: 3,
-      title: "Save Sumatra Tigers",
-      status: "Completed",
-      raised: 75000000,
-      target: 70000000,
-      trees: 3000,
-      image: "https://images.unsplash.com/photo-1596356453261-0d265ae2520d?auto=format&fit=crop&q=80&w=800",
-    },
-  ];
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Fetch campaigns from Firebase
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      setIsLoading(true);
+      try {
+        // Get user email from localStorage (adjust based on your auth setup)
+        const userData = JSON.parse(localStorage.getItem("user") || "{}");
+        const userEmail = userData.email;
+
+        if (!userEmail) {
+          console.error("User email not found in localStorage");
+          setCampaigns([]);
+          return;
+        }
+
+        // Create query to filter by user's email
+        const campaignsRef = collection(db, "campaignsv2");
+        const q = query(
+          campaignsRef,
+          where("created_by_email", "==", userEmail)
+        );
+
+        const querySnapshot = await getDocs(q);
+        const campaignsData = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+
+          // Calculate financial values
+          const targetDonasi = data.target_donasi || 0;
+          const totalPohon = data.total_pohon || 0;
+          const totalDonasi = data.total_donasi || 0;
+          const treeValue = 15000; // Value per tree
+
+          return {
+            // Document ID for linking
+            id: doc.id,
+
+            // Campaign data from your schema
+            campaignId: data.id || doc.id,
+            judul: data.judul || "Untitled Campaign",
+            status: data.status || "draft",
+            target_donasi: targetDonasi,
+            total_donasi: totalDonasi,
+            total_pohon: totalPohon,
+            total_donatur: data.total_donatur || 0,
+            progress_percentage: data.progress_percentage || 0,
+
+            // Calculated values for display
+            raised: totalDonasi > 0 ? totalDonasi : totalPohon * treeValue,
+            target: targetDonasi * treeValue,
+            trees: totalPohon,
+
+            // Other fields
+            poster_url: data.poster_url || "",
+            lokasi: data.lokasi || "",
+            jenis_pohon: data.jenis_pohon || "",
+            created_at: data.created_at?.toDate?.() || null,
+            updated_at: data.updated_at?.toDate?.() || null,
+          };
+        });
+
+        setCampaigns(campaignsData);
+      } catch (error) {
+        console.error("Error fetching campaigns:", error);
+        setCampaigns([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCampaigns();
+  }, []);
+
+  // Filter campaigns based on search term
+  const filteredCampaigns = campaigns.filter(
+    (campaign) =>
+      campaign.judul.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      campaign.lokasi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      campaign.jenis_pohon.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Format date
+  const formatDate = (date: any) => {
+    if (!date) return "-";
+    return new Date(date).toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  // Get status badge color
+  const getStatusColor = (status: any) => {
+    switch (status?.toLowerCase()) {
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "draft":
+        return "bg-yellow-100 text-yellow-800";
+      case "completed":
+        return "bg-blue-100 text-blue-800";
+      case "archived":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  // Translate status to Indonesian
+  const translateStatus = (status: any) => {
+    switch (status?.toLowerCase()) {
+      case "draft":
+        return "Draft";
+      case "active":
+        return "Aktif";
+      case "completed":
+        return "Selesai";
+      case "archived":
+        return "Diarsipkan";
+      default:
+        return status || "Draft";
+    }
+  };
 
   return (
-    <div className="text-black space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Halo Ridwan</h1>
-          <p className="text-gray-500">Buat, Kelola, dan Sebarkan Kampanye</p>
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+              Kampanye Saya
+            </h1>
+            <p className="text-gray-600 mt-1">
+              Kelola dan pantau kampanye yang telah Anda buat
+            </p>
+          </div>
+          <Link
+            href="/dashboard/admin/add"
+            className="inline-flex items-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Buat Kampanye Baru
+          </Link>
         </div>
-        <Link
-          href="/dashboard/admin/add"
-          className="px-4 py-2 bg-leaf-600 hover:bg-leaf-700 text-white rounded-lg transition-colors flex items-center gap-2"
-        >
-          <i className="bx bx-plus"></i> Buat Kampanye
-        </Link>
-      </div>
-      <div className="flex items-center gap-4 w-full my-4">
-        {/* Search Bar */}
-                        <label className="input w-full bg-white border-2 border-leaf-500 rounded-2xl">
-                          <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none"
-                              stroke="black">
-                              <circle cx="11" cy="11" r="8"></circle>
-                              <path d="m21 21-4.3-4.3"></path>
-                            </g>
-                          </svg>
-                          <input type="search" required placeholder="Search" />
-                        </label>
-          {/* Filter */}
-              <div className="flex gap-4">
-                {/* <select
-                value={mitra}
-                onChange={(e) => setMitra(e.target.value)}
-                className="border border-leaf-400 rounded-lg px-6 py-3 text-sm text-leaf-950 bg-white focus:ring-2 focus:ring-leaf-500"
+
+        {/* Campaigns Table */}
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
+              <p className="text-gray-600">Memuat kampanye...</p>
+            </div>
+          ) : filteredCampaigns.length === 0 ? (
+            <div className="text-center py-12">
+              <svg
+                className="w-16 h-16 mx-auto text-gray-300 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <option value="">Pilih Mitra</option>
-                <option value="pemerintah">Pemerintah</option>
-                <option value="swasta">Swasta</option>
-                <option value="internasional">Internasional</option>
-                <option value="komunitas">Komunitas Lokal</option>
-              </select> */}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                />
+              </svg>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {searchTerm ? "Tidak ditemukan kampanye" : "Belum ada kampanye"}
+              </h3>
+              <p className="text-gray-500 max-w-md mx-auto mb-6">
+                {searchTerm
+                  ? "Coba gunakan kata kunci lain atau hapus pencarian"
+                  : "Mulai dengan membuat kampanye pertama Anda untuk menggalang dana penanaman pohon"}
+              </p>
+              {!searchTerm && (
+                <Link
+                  href="/dashboard/admin/add"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Buat Kampanye Pertama
+                </Link>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    Daftar Kampanye
+                  </h2>
+                  <span className="text-sm text-gray-500">
+                    {filteredCampaigns.length} dari {campaigns.length} kampanye
+                  </span>
+                </div>
               </div>
-      </div>
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
-              <tr>
-                <th className="px-6 py-4 font-medium">Kampanye</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium">Total Dana</th>
-                <th className="px-6 py-4 font-medium">Total Pohon</th>
-                <th className="px-6 py-4 font-medium text-right">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {campaigns.map((campaign) => (
-                <tr key={campaign.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-4">
-                      <div className="relative w-12 h-12 rounded-lg overflow-hidden">
-                        <Image
-                          src={""}
-                          alt={campaign.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <span className="font-medium text-gray-800">{campaign.title}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                        ${campaign.status === 'Active' ? 'bg-green-100 text-green-800' :
-                          campaign.status === 'Planning' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-gray-100 text-gray-800'}`}
-                    >
-                      {campaign.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    Rp {campaign.raised.toLocaleString()} <span className="text-xs text-gray-400">/ {campaign.target.toLocaleString()}</span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {campaign.trees} 🌲
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <Link
-                      href={`/dashboard/admin/${campaign.id}`}
-                      className="text-leaf-600 hover:text-leaf-800 font-medium text-sm"
-                    >
-                      Kelola
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Kampanye
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Lokasi
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Total Dana
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Pohon Tertanam
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Dibuat
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Aksi
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredCampaigns.map((campaign) => (
+                      <tr
+                        key={campaign.id}
+                        className="hover:bg-gray-50 transition-colors"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-12 w-12 rounded-lg overflow-hidden bg-gray-100 mr-4">
+                              {campaign.poster_url ? (
+                                <Image
+                                  src={campaign.poster_url}
+                                  alt={campaign.judul}
+                                  width={48}
+                                  height={48}
+                                  className="h-full w-full object-cover"
+                                />
+                              ) : (
+                                <div className="h-full w-full flex items-center justify-center bg-green-50 text-green-600">
+                                  <svg
+                                    className="w-6 h-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={1.5}
+                                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                                    />
+                                  </svg>
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <div className="font-medium text-gray-900">
+                                {campaign.judul}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {campaign.jenis_pohon}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                              campaign.status
+                            )}`}
+                          >
+                            {translateStatus(campaign.status)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                          {campaign.lokasi || "-"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            Rp {campaign.raised.toLocaleString("id-ID")}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            dari Rp {campaign.target.toLocaleString("id-ID")}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">🌲</span>
+                            <span className="text-sm font-medium text-gray-900">
+                              {campaign.trees}
+                            </span>
+                            <span className="text-xs text-gray-500">pohon</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatDate(campaign.created_at)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <Link
+                            href={`/dashboard/admin/${campaign.campaignId}`}
+                            className="inline-flex items-center gap-1.5 text-green-600 hover:text-green-900"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                              />
+                            </svg>
+                            Kelola
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

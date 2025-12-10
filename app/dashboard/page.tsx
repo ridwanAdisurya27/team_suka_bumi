@@ -1,19 +1,48 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function DashboardPage() {
+  function formatDate(isoString: any) {
+    if (!isoString) return "";
+    const d = new Date(isoString);
+
+    const monthNames = [
+      "januari",
+      "februari",
+      "maret",
+      "april",
+      "mei",
+      "juni",
+      "juli",
+      "agustus",
+      "september",
+      "oktober",
+      "november",
+      "desember",
+    ];
+
+    const day = d.getDate();
+    const month = monthNames[d.getMonth()];
+    const year = d.getFullYear();
+
+    return `${day} ${month} ${year}`;
+  }
   // Hardcoded User Data
   const user = {
     name: "Ridwan Adisurya",
     email: "ridwan@example.com",
     joinDate: "November 2023",
-    avatar: "https://ui-avatars.com/api/?name=Ridwan+Adisurya&background=6fbf68&color=fff",
+    avatar:
+      "https://ui-avatars.com/api/?name=Ridwan+Adisurya&background=6fbf68&color=fff",
     totalTrees: 145,
     rank: 12,
     co2Reduced: "3,625 kg",
     pollutionReduced: "12%",
   };
 
+  const localData = JSON.parse(localStorage.getItem("user") ?? "null");
+  console.log(localData);
   // Mock Donation History
   const donations = [
     { id: 1, campaign: "Reforest Borneo", trees: 50, date: "2024-11-25" },
@@ -30,7 +59,7 @@ export default function DashboardPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-          <p className="text-gray-500">Selamat Datang, {user.name}!</p>
+          <p className="text-gray-500">Selamat Datang, {localData.name}!</p>
         </div>
         <Link
           href="/dashboard/campaigns"
@@ -45,16 +74,18 @@ export default function DashboardPage() {
         {/* Profile Card */}
         <div className="h-full bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-4">
           <Image
-            src={user.avatar}
-            alt={user.name}
+            src={localData.photo}
+            alt={localData.name}
             width={60}
             height={60}
             className="rounded-full"
           />
           <div className="text-center">
-            <h3 className="font-semibold text-gray-800">{user.name}</h3>
-            <p className="text-sm text-gray-500">{user.email}</p>
-            <p className="text-xs text-leaf-500 mt-1">Member since {user.joinDate}</p>
+            <h3 className="font-semibold text-gray-800">{localData.name}</h3>
+            <p className="text-sm text-gray-500">{localData.email}</p>
+            <p className="text-xs text-leaf-500 mt-1">
+              Member since {formatDate(localData.createdAt)}
+            </p>
           </div>
         </div>
 
@@ -68,9 +99,13 @@ export default function DashboardPage() {
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-gray-500 text-sm font-medium">Donasi Pohon</h3>
+                  <h3 className="text-gray-500 text-sm font-medium">
+                    Donasi Pohon
+                  </h3>
                 </div>
-                <p className="text-3xl font-bold text-gray-800">{user.totalTrees}</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {user.totalTrees}
+                </p>
               </div>
             </div>
             <div className="bg-gradient-to-br from-blue-200 to-blue-500 py-4 px-2 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center">
@@ -78,8 +113,12 @@ export default function DashboardPage() {
                 <i className="bx bx-wind text-white text-3xl"></i>
               </div>
               <div className="text-center">
-                <h3 className="text-gray-500 text-sm font-medium">CO2 Reduced</h3>
-                <p className="text-3xl font-bold text-gray-800">{user.co2Reduced}</p>
+                <h3 className="text-gray-500 text-sm font-medium">
+                  CO2 Reduced
+                </h3>
+                <p className="text-3xl font-bold text-gray-800">
+                  {user.co2Reduced}
+                </p>
               </div>
             </div>
           </div>
@@ -92,8 +131,12 @@ export default function DashboardPage() {
           {/* Latest Donation */}
           <div className="bg-gradient-to-r from-leaf-500 to-leaf-700 rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
             <div className="relative z-10">
-              <h3 className="text-leaf-100 font-medium mb-1">Kontribusi Terakhir</h3>
-              <h2 className="text-2xl font-bold mb-4">{latestDonation.campaign}</h2>
+              <h3 className="text-leaf-100 font-medium mb-1">
+                Kontribusi Terakhir
+              </h3>
+              <h2 className="text-2xl font-bold mb-4">
+                {latestDonation.campaign}
+              </h2>
               <div className="flex items-center gap-4">
                 <div className="bg-white/20 backdrop-blur-sm p-3 rounded-lg">
                   <p className="text-xs text-leaf-100">Pohon yang ditanam</p>
@@ -112,24 +155,40 @@ export default function DashboardPage() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
               <h3 className="font-bold text-gray-800">Riwayat Donasi</h3>
-              <Link href="#" className="text-sm text-leaf-600 hover:text-leaf-700 font-medium">Lihat Semua</Link>
+              <Link
+                href="#"
+                className="text-sm text-leaf-600 hover:text-leaf-700 font-medium"
+              >
+                Lihat Semua
+              </Link>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
                   <tr>
                     <th className="px-6 py-3 font-medium">Kampanye</th>
-                    <th className="px-6 py-3 font-medium">Pohon yang ditanam</th>
+                    <th className="px-6 py-3 font-medium">
+                      Pohon yang ditanam
+                    </th>
                     <th className="px-6 py-3 font-medium">Tanggal</th>
                     <th className="px-6 py-3 font-medium">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {donations.map((donation) => (
-                    <tr key={donation.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 text-sm font-medium text-gray-800">{donation.campaign}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{donation.trees}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{donation.date}</td>
+                    <tr
+                      key={donation.id}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="px-6 py-4 text-sm font-medium text-gray-800">
+                        {donation.campaign}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {donation.trees}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {donation.date}
+                      </td>
                       <td className="px-6 py-4">
                         <span className="badge !bg-leaf-700 !text-white">
                           Sukses
@@ -148,8 +207,13 @@ export default function DashboardPage() {
           {/* Quick Action / Promo */}
           <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
             <h3 className="font-bold text-blue-900 mb-2">Jadilah Anggota</h3>
-            <p className="text-sm text-blue-700 mb-4">Buat campaign dan berikan donasi pohon untuk lingkungan.</p>
-            <Link href="/dashboard/upgrade" className="block w-full py-2 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-lg text-sm font-medium transition-colors">
+            <p className="text-sm text-blue-700 mb-4">
+              Buat campaign dan berikan donasi pohon untuk lingkungan.
+            </p>
+            <Link
+              href="/dashboard/upgrade"
+              className="block w-full py-2 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-lg text-sm font-medium transition-colors"
+            >
               Daftar Sekarang
             </Link>
           </div>
@@ -157,7 +221,12 @@ export default function DashboardPage() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-gray-800">Leaderboard</h3>
-              <Link href="/dashboard/leaderboard" className="text-sm text-leaf-600 hover:text-leaf-700">Lihat Semua</Link>
+              <Link
+                href="/dashboard/leaderboard"
+                className="text-sm text-leaf-600 hover:text-leaf-700"
+              >
+                Lihat Semua
+              </Link>
             </div>
             <div className="text-center mb-6 p-4 bg-leaf-50 rounded-lg border border-leaf-100">
               <p className="text-sm text-gray-600">Peringkatmu </p>
@@ -168,13 +237,25 @@ export default function DashboardPage() {
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${i === 1 ? 'bg-yellow-100 text-yellow-700' : i === 2 ? 'bg-gray-100 text-gray-700' : 'bg-orange-100 text-orange-700'}`}>
+                    <span
+                      className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${
+                        i === 1
+                          ? "bg-yellow-100 text-yellow-700"
+                          : i === 2
+                          ? "bg-gray-100 text-gray-700"
+                          : "bg-orange-100 text-orange-700"
+                      }`}
+                    >
                       {i}
                     </span>
                     <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-                    <span className="text-sm font-medium text-gray-700">Hamba Allah</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Hamba Allah
+                    </span>
                   </div>
-                  <span className="text-sm font-bold text-gray-800">200 🌲</span>
+                  <span className="text-sm font-bold text-gray-800">
+                    200 🌲
+                  </span>
                 </div>
               ))}
             </div>
