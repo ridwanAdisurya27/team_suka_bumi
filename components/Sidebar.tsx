@@ -87,6 +87,8 @@ export default function Sidebar() {
               const isActive = pathname === item.href;
               if (localData.isYayasan == "false" && item.name == "Admin")
                 return null;
+              if (localData.isYayasan == "true" && item.name == "Upgrade")
+                return null;
               return (
                 <Link
                   key={item.href}

@@ -4,16 +4,153 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import Navbar from "@/components/Navbar";
 import Jumbotron from "@/components/Jumbotron";
 import Footer from "@/components/Footer";
 import DonationCard from "@/components/DonationCard";
+
+interface Campaign {
+  id: string;
+  campaignId: string;
+  judul: string;
+  status: string;
+  target_donasi: number;
+  total_donasi: number;
+  total_pohon: number;
+  total_donatur: number;
+  progress_percentage: number;
+  raised: number;
+  target: number;
+  trees: number;
+  poster_url: string;
+  lokasi: string;
+  jenis_pohon: string;
+  nama_yayasan?: string; // Tambahkan field ini jika ada di data
+  created_at: Date | null;
+  updated_at: Date | null;
+}
+
+interface DonationCardData {
+  image: string;
+  title: string;
+  description: string;
+  current: number;
+  target: number;
+  progress: number;
+  deadline: string;
+  nama_yayasan?: string;
+  lokasi?: string;
+}
 
 export default function Campaign() {
   const [sort, setSort] = useState<"terdekat" | "terbaru">("terdekat");
   const [medan, setMedan] = useState("");
   const [lokasi, setLokasi] = useState("");
   const [mitra, setMitra] = useState("");
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Fetch campaigns dari Firebase tanpa filter email
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      setIsLoading(true);
+      try {
+        const campaignsRef = collection(db, "campaignsv2");
+        const querySnapshot = await getDocs(campaignsRef);
+
+        const campaignsData = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+
+          // Calculate financial values
+          const targetDonasi = data.target_donasi || 0;
+          const totalPohon = data.total_pohon || 0;
+          const totalDonasi = data.total_donasi || 0;
+          const treeValue = 15000; // Value per tree
+
+          return {
+            // Document ID untuk linking
+            id: doc.id,
+
+            // Campaign data dari schema
+            campaignId: data.id,
+            judul: data.judul || "Untitled Campaign",
+            status: data.status || "draft",
+            target_donasi: targetDonasi,
+            total_donasi: totalDonasi,
+            total_pohon: totalPohon,
+            total_donatur: data.total_donatur || 0,
+            progress_percentage: data.progress_percentage || 0,
+
+            // Calculated values untuk display
+            raised: totalDonasi > 0 ? totalDonasi : totalPohon * treeValue,
+            target: targetDonasi * treeValue,
+            trees: totalPohon,
+
+            // Field lainnya
+            poster_url: data.poster_url || "",
+            lokasi: data.lokasi || "",
+            jenis_pohon: data.jenis_pohon || "",
+            nama_yayasan: data.created_by_yayasan || data.created_by_name || "", // Ambil nama yayasan jika ada
+            created_at: data.created_at?.toDate?.() || null,
+            updated_at: data.updated_at?.toDate?.() || null,
+          };
+        });
+
+        setCampaigns(campaignsData);
+      } catch (error) {
+        console.error("Error fetching campaigns:", error);
+        setCampaigns([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCampaigns();
+  }, []);
+
+  // Konversi data campaign ke format DonationCard
+  const donationCards: DonationCardData[] = campaigns.map((campaign) => {
+    // Format judul untuk title (ambil 2-3 kata pertama jika terlalu panjang)
+    const titleWords = campaign.judul.split(" ");
+    const shortTitle =
+      titleWords.length > 3
+        ? `${titleWords.slice(0, 3).join(" ")}...`
+        : campaign.judul;
+
+    // Buat deskripsi dari kombinasi judul dan lokasi
+    const description = `${campaign.judul}`;
+
+    // Hitung progress percentage
+    const progress =
+      campaign.target > 0
+        ? Math.round((campaign.raised / campaign.target) * 100)
+        : 0;
+
+    // Generate deadline dummy (atau gunakan data dari firebase jika ada)
+    const deadlines = [
+      "6 hari lagi",
+      "2 Minggu lagi",
+      "1 Bulan lagi",
+      "3 Bulan lagi",
+    ];
+    const randomDeadline =
+      deadlines[Math.floor(Math.random() * deadlines.length)];
+
+    return {
+      image: campaign.poster_url || "/assets/img/item/gemarsorong.jpg",
+      title: campaign.nama_yayasan || shortTitle,
+      description: description,
+      current: campaign.raised,
+      target: campaign.target,
+      progress: Math.min(progress, 100), // Maksimal 100%
+      deadline: randomDeadline,
+      nama_yayasan: campaign.nama_yayasan,
+      lokasi: campaign.lokasi,
+    };
+  });
 
   const handleApply = () => {
     console.log({
@@ -23,6 +160,7 @@ export default function Campaign() {
       mitra,
     });
   };
+
   useEffect(() => {
     // Initialize AOS
     if (typeof window !== "undefined") {
@@ -33,6 +171,23 @@ export default function Campaign() {
       });
     }
   }, []);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="!overflow-x-hidden bg-leaf-50 min-h-screen">
+        <Navbar />
+        <Jumbotron
+          imageUrl="/assets/img/background/campaign_background.jpeg"
+          title="Donasi Bibit Pohon Resapling"
+        />
+        <div className="flex justify-center items-center h-64">
+          <div className="text-leaf-700">Memuat kampanye...</div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="!overflow-x-hidden bg-leaf-50">
@@ -50,6 +205,8 @@ export default function Campaign() {
               type="text"
               placeholder="Cari program donasi terbaru..."
               className="bg-white border-none rounded-lg px-4 py-3 text-sm w-full focus:ring-2 focus:ring-leaf-400"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <i className="bx bx-search absolute right-3 top-2.5 text-leaf-900 text-xl"></i>
           </div>
@@ -131,47 +288,36 @@ export default function Campaign() {
           </button>
         </div>
       </div>
-      <section className="donation  px-6 sm:px-12 mt-4 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 xl:gap-12 mt-10 mx-auto justify-between">
-          {donationCards.map((card, index) => (
-            <Link href={`/campaign/charity`}>
-              <DonationCard key={index} {...card} />
-            </Link>
-          ))}
-        </div>
+      <section className="donation px-6 sm:px-12 mt-4 pb-20">
+        {donationCards.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-leaf-700">
+              Tidak ada kampanye donasi yang tersedia.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 xl:gap-12 mt-10 mx-auto justify-between">
+            {donationCards.map((card, index) => (
+              <Link
+                href={`/campaign/${campaigns[index]?.campaignId || "detail"}`}
+                key={campaigns[index]?.campaignId || index}
+              >
+                <DonationCard
+                  image={card.image}
+                  title={card.title}
+                  description={card.description}
+                  current={card.current}
+                  target={card.target}
+                  progress={card.progress}
+                  deadline={card.deadline}
+                />
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
       <Footer />
     </div>
   );
 }
-
-const donationCards = [
-  {
-    image: "/assets/img/item/sinarmas.jpeg",
-    title: "Sinarmas",
-    description: "Menanam kembali kertas menjadi pohon bersama PT. Sinarmas",
-    current: 240210,
-    target: 500000,
-    progress: 49,
-    deadline: "6 hari lagi",
-  },
-  {
-    image: "/assets/img/item/ikn.jpg",
-    title: "Otorita IKA-EN",
-    description: "Revitalisasi Hutan di Kalimantan akibat proyek strategis",
-    current: 147783,
-    target: 600000,
-    progress: 23,
-    deadline: "2 Minggu lagi",
-  },
-  {
-    image: "/assets/img/item/gemarsorong.jpg",
-    title: "Hulujaya",
-    description: "Reboisasi Mangrove pencegah abrasi di Sorong Papua",
-    current: 21023,
-    target: 100000,
-    progress: 21,
-    deadline: "1 Bulan lagi",
-  },
-];

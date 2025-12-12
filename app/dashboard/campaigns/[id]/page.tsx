@@ -57,22 +57,28 @@ export default function Page({ params }: PageProps) {
   return (
     <main className="space-y-4 text-black">
       {/* Link Back */}
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-                <Link href="/dashboard/campaigns" className="hover:text-leaf-600">Kampanye</Link>
-                <i className="bx bx-chevron-right"></i>
-                <span>Borneo</span>
+      <div className="flex items-center gap-2 text-sm text-gray-500">
+        <Link href="/dashboard/campaigns" className="hover:text-leaf-600">
+          Kampanye
+        </Link>
+        <i className="bx bx-chevron-right"></i>
+        <span>Borneo</span>
+      </div>
+      {/* Judul dan Info Kecil */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-800">Reboisasi Borneo</h1>
+        <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+          <span className="flex items-center gap-1">
+            <i className="bx bx-map"></i> Borneo
+          </span>
+          <span className="flex items-center gap-1">
+            <i className="bx bx-calendar"></i> Planting: 2025-12-01
+          </span>
+          <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded-full text-xs font-bold">
+            Active
+          </span>
         </div>
-        {/* Judul dan Info Kecil */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Reboisasi Borneo</h1>
-          <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-            <span className="flex items-center gap-1"><i className="bx bx-map"></i> Borneo</span>
-            <span className="flex items-center gap-1"><i className="bx bx-calendar"></i> Planting:
-              2025-12-01</span>
-            <span
-              className="px-2 py-0.5 bg-green-100 text-green-800 rounded-full text-xs font-bold">Active</span>
-          </div>
-        </div>
+      </div>
       <section className="flex flex-col md:flex-row w-full min-h-screen">
         <div className="left w-full md:w-[70%] pb-24">
           <Jumbotron
@@ -112,7 +118,7 @@ export default function Page({ params }: PageProps) {
                 <div>
                   <div className="text-4xl font-bold text-green-700">536</div>
                   <div className="text-xs text-gray-600">Donatur</div>
-                </div>                
+                </div>
                 <div>
                   <div className="text-4xl font-bold text-green-700">12</div>
                   <div className="text-xs text-gray-600">Bagikan</div>
@@ -138,7 +144,10 @@ export default function Page({ params }: PageProps) {
                 className="flex-1 bg-white border border-green-600 text-green-700 hover:bg-green-50 py-3 rounded-lg font-medium flex items-center justify-center gap-2"
               >
                 <span>Bagikan</span>
-                <span> <i className="bx bxs-megaphone"></i> </span>
+                <span>
+                  {" "}
+                  <i className="bx bxs-megaphone"></i>{" "}
+                </span>
               </button>
             </div>
 
@@ -286,7 +295,11 @@ export default function Page({ params }: PageProps) {
             <button
               type="submit"
               disabled={!selectedFile}
-              className={`w-full ${!selectedFile ? "bg-gray-400 text-black" : "bg-green-600! text-white"} py-3 rounded-lg font-semibold hover:bg-green-700 disabled:cursor-not-allowed transition-colors`}
+              className={`w-full ${
+                !selectedFile
+                  ? "bg-gray-400 text-black"
+                  : "bg-green-600! text-white"
+              } py-3 rounded-lg font-semibold hover:bg-green-700 disabled:cursor-not-allowed transition-colors`}
             >
               Konfirmasi Donasi {jumlahPohon} Pohon
             </button>
