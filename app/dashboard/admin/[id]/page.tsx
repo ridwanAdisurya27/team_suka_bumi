@@ -66,7 +66,7 @@ function StatsSection({ campaign }: { campaign: any }) {
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Total Pohon */}
+        {/* Total Pohon */}``
         <div className="bg-gradient-to-r from-leaf-500 to-leaf-700 rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
           <div className="relative z-10">
             <h2 className="text-2xl font-bold mb-4">Total Pohon</h2>
