@@ -36,7 +36,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
   loading: () => <p>Loading editor...</p>,
 });
 
-const LeafletMap = dynamic(() => import("../../../test/map/leafletMap"), {
+const LeafletMap = dynamic(() => import("../../history/maps/LeafletMap"), {
   ssr: false,
 });
 

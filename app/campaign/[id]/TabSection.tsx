@@ -109,7 +109,7 @@ export default function TabSection({
           onClick={() => setActiveTab("desc")}
           className={`pb-2 text-lg font-medium transition ${
             activeTab === "desc"
-              ? "border-b-2 border-green-600 text-green-700"
+              ? "border-b-2 border-green-600 text-white !bg-green-600"
               : "text-gray-500 hover:text-green-600"
           }`}
         >
@@ -120,7 +120,7 @@ export default function TabSection({
           onClick={() => setActiveTab("update")}
           className={`pb-2 text-lg font-medium transition ${
             activeTab === "update"
-              ? "border-b-2 border-green-600 text-green-700"
+              ? "border-b-2 border-green-600 text-white !bg-green-600"
               : "text-gray-500 hover:text-green-600"
           }`}
         >

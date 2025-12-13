@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { ToastContainer, toast } from "react-toastify";
 
 interface CampaignData {
   id: string;
@@ -264,11 +265,29 @@ export default function Page({ params }: PageProps) {
 
     try {
       if (!campaignData) {
-        alert("Campaign tidak ditemukan");
+        toast.error("Campaign tidak ditemukan", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         return;
       }
       if (jumlahPohon < 1) {
-        alert("ngotak woy");
+        toast.error("Jumlah pohon harus lebih dari 0", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         return;
       }
 
@@ -325,12 +344,35 @@ export default function Page({ params }: PageProps) {
           progress_percentage: newProgress,
         });
 
-        alert(
-          `✅ Donasi ${jumlahPohon} pohon (Rp ${totalDonasi.toLocaleString()}) berhasil!`
+      
+         toast.success(
+           `Donasi ${jumlahPohon} pohon (Rp ${totalDonasi.toLocaleString()}) berhasil!`,
+          {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          }
         );
         handleCloseModal();
       } else {
-        alert(`❌ Gagal: ${result.error || "Error tidak diketahui"}`);
+        toast.error(
+        "Terjadi kesalahan saat mengirim data: " + (result.error as Error).message,
+        {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      );
         throw new Error(result.error || "Gagal melakukan donasi");
       }
     } catch (error: any) {
@@ -394,7 +436,18 @@ export default function Page({ params }: PageProps) {
             height="h-[60vh] md:h-[60vh]"
             padding="!px-0"
           />
-
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
           <TabSection
             campaignData={campaignData}
             deskripsiHtml={deskripsiHtml}
@@ -554,11 +607,10 @@ export default function Page({ params }: PageProps) {
 
           {isAuthReady && (
             <div
-              className={`text-sm p-3 rounded-lg text-center mb-6 ${
-                localData?.email
+              className={`text-sm p-3 rounded-lg text-center mb-6 ${localData?.email
                   ? "bg-green-100 text-green-700"
                   : "bg-gray-200 text-gray-700"
-              }`}
+                }`}
             >
               {localData?.email ? (
                 <>
@@ -716,11 +768,10 @@ export default function Page({ params }: PageProps) {
                 />
                 <button
                   onClick={handleCopyLink}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    isLinkCopied
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${isLinkCopied
                       ? "bg-green-600 text-white"
                       : "bg-green-100 text-green-700 hover:bg-green-200"
-                  }`}
+                    }`}
                 >
                   {isLinkCopied ? "✓ Tersalin" : "Salin"}
                 </button>

@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 interface PodiumProps {
   item: {
@@ -17,7 +18,7 @@ function Podium({ item, index }: PodiumProps) {
         <div className="flex flex-col items-center">
           <div className="avatar">
             <div className="w-14 rounded-full">
-              <img src={item.image} />
+              <Image src={item.image} alt={item.name} width={50} height={50} />
             </div>
           </div>
           <span className="text-sm text-center">{item.name}</span>

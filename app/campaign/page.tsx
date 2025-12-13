@@ -11,6 +11,7 @@ import Jumbotron from "@/components/Jumbotron";
 import Footer from "@/components/Footer";
 import DonationCard from "@/components/DonationCard";
 
+
 interface Campaign {
   id: string;
   campaignId: string;
@@ -68,7 +69,6 @@ export default function Campaign() {
           const targetDonasi = data.target_donasi || 0;
           const totalPohon = data.total_pohon || 0;
           const totalDonasi = data.total_donasi || 0;
-          const treeValue = 15000; // Value per tree
 
           return {
             // Document ID untuk linking
@@ -85,8 +85,8 @@ export default function Campaign() {
             progress_percentage: data.progress_percentage || 0,
 
             // Calculated values untuk display
-            raised: totalDonasi > 0 ? totalDonasi : totalPohon * treeValue,
-            target: targetDonasi * treeValue,
+            raised:  totalPohon ,
+            target: targetDonasi ,
             trees: totalPohon,
 
             // Field lainnya

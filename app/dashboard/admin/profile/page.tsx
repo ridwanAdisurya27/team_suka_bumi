@@ -81,17 +81,7 @@ export default function Profile (){
                 )}
               </div>
               <div className="md:col-span-2">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  KTP / ID Card (JPG, PNG) <span className="text-red-500">*</span>
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
-                  <i className="bx bx-image-add text-3xl text-gray-400 mb-2"></i>
-                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-400 mt-1">Max file size: 5MB</p>
-                  <input type="file" className="hidden" accept="image/*" required />
-                </div>
-              </div>
+            
               </div>
             </div>
           </div>
@@ -167,57 +157,7 @@ export default function Profile (){
           <hr className="border-gray-100" />
 
           {/* Document Uploads */}
-          <div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <i className="bx bxs-cloud-upload text-leaf-500"></i> Dokumen Yayasan
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Surat Izin Operasional (PDF) <span className="text-red-500">*</span>
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
-                  <i className="bx bx-upload text-3xl text-gray-400 mb-2"></i>
-                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-400 mt-1">Max file size: 10MB</p>
-                  <input type="file" className="hidden" accept=".pdf" required />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Surat Pendirian LSM (PDF) <span className="text-red-500">*</span>
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
-                  <i className="bx bx-upload text-3xl text-gray-400 mb-2"></i>
-                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-400 mt-1">Max file size: 10MB</p>
-                  <input type="file" className="hidden" accept=".pdf" required />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Surat Pengesahan Badan Hukum (PDF) <span className="text-red-500">*</span>
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
-                  <i className="bx bx-upload text-3xl text-gray-400 mb-2"></i>
-                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-400 mt-1">Max file size: 10MB</p>
-                  <input type="file" accept=".pdf" required />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Surat Domisili Yayasan (PDF) <span className="text-red-500">*</span>
-                </label>
-                <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-leaf-500 transition-colors cursor-pointer bg-gray-50">
-                  <i className="bx bx-upload text-3xl text-gray-400 mb-2"></i>
-                  <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-400 mt-1">Max file size: 10MB</p>
-                  <input type="file" className="file-input top-0 left-0 w-full h-full opacity-0 absolute" accept=".pdf" required />
-                </div>
-              </div>
-            </div>
-          </div>
+     
 
           <div className="pt-4">
             <button

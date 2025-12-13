@@ -51,8 +51,9 @@ export default function AdminPage() {
         const q = query(
           campaignsRef,
           where("created_by_email", "==", userEmail)
-        );
 
+        );
+        const now = new Date();
         const querySnapshot = await getDocs(q);
         const campaignsData = querySnapshot.docs.map((doc) => {
           const data = doc.data();
@@ -63,6 +64,53 @@ export default function AdminPage() {
           const totalDonasi = data.total_donasi || 0;
           const treeValue = 15000; // Value per tree
 
+          // Get dates
+          const tanggal_mulai = data.tanggal_mulai
+            ? (data.tanggal_mulai.toDate ? data.tanggal_mulai.toDate() : new Date(data.tanggal_mulai))
+            : null;
+          const tanggal_berakhir = data.tanggal_berakhir
+            ? (data.tanggal_berakhir.toDate ? data.tanggal_berakhir.toDate() : new Date(data.tanggal_berakhir))
+            : null;
+          // console.log(tanggal_mulai, tanggal_berakhir);
+
+          // Calculate status based on dates
+          if (tanggal_mulai && tanggal_berakhir) {
+            // Pastikan kedua tanggal adalah Date object yang valid
+            const startDate = tanggal_mulai instanceof Date ? tanggal_mulai : new Date(tanggal_mulai);
+            const endDate = tanggal_berakhir instanceof Date ? tanggal_berakhir : new Date(tanggal_berakhir);
+
+            console.log("Comparing dates:", {
+              start: startDate,
+              end: endDate,
+              now: now,
+              startValid: !isNaN(startDate.getTime()),
+              endValid: !isNaN(endDate.getTime())
+            });
+
+            if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+              if (now >= startDate && now <= endDate) {
+                status = "active";
+              } else if (now > endDate) {
+                status = "closed";
+              } else if (now < startDate) {
+                status = "draft";
+              }
+            }
+          } else if (tanggal_mulai) {
+            const startDate = tanggal_mulai instanceof Date ? tanggal_mulai : new Date(tanggal_mulai);
+
+            if (!isNaN(startDate.getTime())) {
+              if (now >= startDate) {
+                status = "active";
+              } else {
+                status = "draft";
+              }
+            }
+          }
+
+          console.log("Final status:", status);
+
+
           return {
             // Document ID for linking
             id: doc.id,
@@ -70,7 +118,7 @@ export default function AdminPage() {
             // Campaign data from your schema
             campaignId: data.id || doc.id,
             judul: data.judul || "Untitled Campaign",
-            status: data.status || "draft",
+            status: status, // Use calculated status instead of data.status
             target_donasi: targetDonasi,
             total_donasi: totalDonasi,
             total_pohon: totalPohon,
@@ -86,6 +134,8 @@ export default function AdminPage() {
             poster_url: data.poster_url || "",
             lokasi: data.lokasi || "",
             jenis_pohon: data.jenis_pohon || "",
+            tanggal_mulai: tanggal_mulai,
+            tanggal_berakhir: tanggal_berakhir,
             created_at: data.created_at?.toDate?.() || null,
             updated_at: data.updated_at?.toDate?.() || null,
           };
@@ -130,6 +180,8 @@ export default function AdminPage() {
         return "bg-yellow-100 text-yellow-800";
       case "completed":
         return "bg-blue-100 text-blue-800";
+      case "closed":
+        return "bg-gray-100 text-gray-800";
       case "archived":
         return "bg-gray-100 text-gray-800";
       default:
@@ -146,6 +198,8 @@ export default function AdminPage() {
         return "Aktif";
       case "completed":
         return "Selesai";
+      case "closed":
+        return "Tutup";
       case "archived":
         return "Diarsipkan";
       default:

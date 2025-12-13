@@ -3,10 +3,21 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase"; // Sesuaikan dengan path firebase config Anda
+
+// Tambahkan interface untuk Donation
+interface Donation {
+  id: string;
+  date: string;
+  name: string;
+  amount: number;
+  status: string;
+  [key: string]: any;
+}
 
 // Component untuk baris data donasi
 function DonationRow({ donation }: { donation: any }) {
@@ -17,12 +28,12 @@ function DonationRow({ donation }: { donation: any }) {
         {donation.name}
       </td>
       <td className="border border-gray-200 p-4">
-        Rp {donation.amount.toLocaleString()}
+        {/* Rp {donation.amount.toLocaleString()} */}
+        {donation.amount}
       </td>
       <td className="border border-gray-200 p-4">
         <span className="badge !bg-leaf-700 !text-white">
-          {" "}
-          {donation.status}{" "}
+          {"Sukses"}
         </span>
       </td>
       <td className="border border-gray-200 p-4 text-center cursor-pointer text-gray-400">
@@ -101,7 +112,21 @@ function StatsSection({ campaign }: { campaign: any }) {
 }
 
 // Component untuk tabel donasi
-function DonationTable() {
+function DonationTable({ donations, loadingDonations }: { donations: Donation[], loadingDonations: boolean }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredDonations, setFilteredDonations] = useState<Donation[]>(donations);
+
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = donations.filter(donation =>
+        donation.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredDonations(filtered);
+    } else {
+      setFilteredDonations(donations);
+    }
+  }, [searchTerm, donations]);
+
   return (
     <div className="w-full border-2 border-gray-200 rounded-xl flex text-black">
       <div className="md:flex-10 w-full">
@@ -109,7 +134,7 @@ function DonationTable() {
           <div className="sticky top-0 z-10 bg-white pb-4">
             <div className="flex justify-between w-full items-center mb-4">
               <h2 className="text-lg font-semibold text-gray-900">
-                Tabel Histori
+                Tabel Histori Donasi
               </h2>
               <div className="flex gap-4 md:w-full">
                 <button className="btn btn-xs !bg-leaf-700 !text-white">
@@ -120,54 +145,85 @@ function DonationTable() {
             <div className="mb-4 flex w-full space-x-4">
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Cari nama donor"
                 className="grow border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <select className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option>Filter</option>
-              </select>
             </div>
           </div>
 
           <div className="max-h-[400px] overflow-y-auto">
-            <table className="min-w-full border-collapse border border-gray-200">
-              <thead>
-                <tr className="bg-gray-100 sticky top-0">
-                  <th className="border border-gray-200 md:p-4 p-2 text-center text-sm font-semibold text-gray-700">
-                    Tanggal
-                  </th>
-                  <th className="border border-gray-200 md:p-4 p-2 text-center text-sm font-semibold text-gray-700">
-                    Username
-                  </th>
-                  <th className="border border-gray-200 md:p-4 p-2 text-center text-sm font-semibold text-gray-700">
-                    Jumlah
-                  </th>
-                  <th className="border border-gray-200 md:p-4 p-2 text-center text-sm font-semibold text-gray-700">
-                    Status
-                  </th>
-                  <th className="border border-gray-200 md:p-4 p-2 text-center w-16 text-sm font-semibold text-gray-700">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Data akan ditampilkan di sini nanti */}
-                {/* Kosongkan tabel seperti yang diminta */}
-              </tbody>
-            </table>
+            {loadingDonations ? (
+              <div className="flex justify-center items-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-leaf-500"></div>
+                <span className="ml-3 text-gray-600">Memuat data donasi...</span>
+              </div>
+            ) : filteredDonations.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500">
+                  {searchTerm ? "Tidak ditemukan donasi yang sesuai" : "Belum ada data donasi"}
+                </p>
+                <p className="text-gray-400 text-sm mt-2">
+                  {searchTerm ? "Coba gunakan kata kunci lain" : "Donasi akan muncul di sini"}
+                </p>
+              </div>
+            ) : (
+              <table className="min-w-full border-collapse border border-gray-200">
+                <thead>
+                  <tr className="bg-gray-100 sticky top-0">
+                    <th className="border border-gray-200 md:p-4 p-2 text-center text-sm font-semibold text-gray-700">
+                      Tanggal
+                    </th>
+                    <th className="border border-gray-200 md:p-4 p-2 text-center text-sm font-semibold text-gray-700">
+                      Username
+                    </th>
+                    <th className="border border-gray-200 md:p-4 p-2 text-center text-sm font-semibold text-gray-700">
+                      Jumlah
+                    </th>
+                    <th className="border border-gray-200 md:p-4 p-2 text-center text-sm font-semibold text-gray-700">
+                      Status
+                    </th>
+                    <th className="border border-gray-200 md:p-4 p-2 text-center w-16 text-sm font-semibold text-gray-700">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredDonations.map((donation) => (
+                    <DonationRow key={donation.id} donation={donation} />
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
+
+          {/* Summary footer */}
+          {filteredDonations.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex justify-between items-center text-sm text-gray-600">
+                <span>Total: {filteredDonations.length} donasi</span>
+                <span className="font-medium">
+                  Total Jumlah: Rp {filteredDonations.reduce((sum, donation) => sum + donation.amount, 0).toLocaleString()}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-// Component untuk menampilkan data
-function DataSection({ campaign }: { campaign: any }) {
+function DataSection({ campaign, donations, loadingDonations }: {
+  campaign: any,
+  donations: Donation[],
+  loadingDonations: boolean
+}) {
   return (
     <>
       <StatsSection campaign={campaign} />
-      <DonationTable />
+      <DonationTable donations={donations} loadingDonations={loadingDonations} />
     </>
   );
 }
@@ -175,6 +231,7 @@ function DataSection({ campaign }: { campaign: any }) {
 // Component untuk informasi kampanye
 // Component untuk informasi kampanye
 function CampaignInfo({ campaign }: { campaign: any }) {
+  const router = useRouter();
   const [descriptionHtml, setDescriptionHtml] = useState<string>("");
 
   useEffect(() => {
@@ -259,13 +316,13 @@ function CampaignInfo({ campaign }: { campaign: any }) {
               <h3 className="text-xl">
                 {campaign.tanggal_planning
                   ? new Date(campaign.tanggal_planning).toLocaleDateString(
-                      "id-ID",
-                      {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                      }
-                    )
+                    "id-ID",
+                    {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    }
+                  )
                   : "-"}
               </h3>
             </div>
@@ -277,13 +334,13 @@ function CampaignInfo({ campaign }: { campaign: any }) {
               <h3 className="text-xl">
                 {campaign.tanggal_mulai
                   ? new Date(campaign.tanggal_mulai).toLocaleDateString(
-                      "id-ID",
-                      {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                      }
-                    )
+                    "id-ID",
+                    {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    }
+                  )
                   : "-"}
               </h3>
             </div>
@@ -295,13 +352,13 @@ function CampaignInfo({ campaign }: { campaign: any }) {
               <h3 className="text-xl">
                 {campaign.tanggal_berakhir
                   ? new Date(campaign.tanggal_berakhir).toLocaleDateString(
-                      "id-ID",
-                      {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                      }
-                    )
+                    "id-ID",
+                    {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    }
+                  )
                   : "-"}
               </h3>
             </div>
@@ -336,6 +393,7 @@ function CampaignInfo({ campaign }: { campaign: any }) {
               className="px-6 py-3 border border-leaf-600 bg-leaf-600 text-white font-bold rounded-lg hover:bg-leaf-700 transition-colors w-2/5"
               onClick={() => {
                 // TODO: Implement update logic
+                router.push(`/dashboard/admin/${campaign.id}/update`);
                 console.log("Update campaign:", campaign.id);
               }}
             >
@@ -408,6 +466,8 @@ export default function CampaignDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("Deskripsi");
+  const [donations, setDonations] = useState<Donation[]>([]);
+  const [loadingDonations, setLoadingDonations] = useState(false);
   const params = useParams();
 
   useEffect(() => {
@@ -452,7 +512,119 @@ export default function CampaignDetailPage() {
     };
 
     fetchCampaign();
-  }, [params?.id]); // Gunakan params?.id sebagai dependency
+  }, [params?.id]);
+  useEffect(() => {
+    const fetchCampaign = async () => {
+      try {
+        setLoading(true);
+
+        if (!params?.id) {
+          setError("ID kampanye tidak ditemukan");
+          setLoading(false);
+          return;
+        }
+
+        const campaignId = params.id as string;
+
+        // Fetch campaign data
+        const campaignsRef = collection(db, "campaignsv2");
+        const q = query(campaignsRef, where("id", "==", campaignId));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const campaignDoc = querySnapshot.docs[0];
+          const campaignData = campaignDoc.data();
+
+          setCampaign({
+            id: campaignDoc.id,
+            ...campaignData,
+          });
+
+          // Fetch donations for this campaign
+          await fetchDonations(campaignId);
+        } else {
+          setError("Kampanye tidak ditemukan");
+        }
+      } catch (err) {
+        console.error("Error fetching campaign:", err);
+        setError("Gagal memuat data kampanye");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchDonations = async (campaignId: string) => {
+      try {
+        setLoadingDonations(true);
+        const donationsRef = collection(db, "transactionsv2");
+        const q = query(
+          donationsRef,
+          where("campaign_id", "==", campaignId)
+        );
+
+        const querySnapshot = await getDocs(q);
+        const donationsData: Donation[] = [];
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+
+          // Format tanggal
+          let formattedDate = "-";
+          if (data.timestamp || data.created_at || data.date) {
+            const dateObj = data.timestamp?.toDate?.() ||
+              data.created_at?.toDate?.() ||
+              new Date(data.date || Date.now());
+            formattedDate = dateObj.toLocaleDateString("id-ID", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            });
+          }
+
+          // Ambil nama donor
+          const donorName = data.donor_name ||
+            data.name ||
+            data.user_name ||
+            "Anonim";
+
+          // Ambil status pembayaran
+          const paymentStatus = data.status ||
+            data.payment_status ||
+            "pending";
+
+          // Format status teks
+          const statusText = "sukses"
+          // console.log(data)
+          donationsData.push({
+            id: doc.id,
+            date: formattedDate,
+            name: donorName,
+            amount: data.jumlah_pohon || data.donation_amount || 0,
+            status: "sukses",
+            ...data
+          });
+        });
+
+        // Sort by date descending (terbaru pertama)
+        donationsData.sort((a, b) => {
+          const dateA = new Date(a.date || 0);
+          const dateB = new Date(b.date || 0);
+          return dateB.getTime() - dateA.getTime();
+        });
+
+        setDonations(donationsData);
+      } catch (err) {
+        console.error("Error fetching donations:", err);
+      } finally {
+        setLoadingDonations(false);
+      }
+    };
+
+    fetchCampaign();
+  }, [params?.id]);
+
+
+  // Gunakan params?.id sebagai dependency
 
   if (loading) {
     return (
@@ -506,8 +678,8 @@ export default function CampaignDetailPage() {
               Tanam:{" "}
               {campaign.tanggal_berakhir
                 ? new Date(campaign.tanggal_berakhir).toLocaleDateString(
-                    "id-ID"
-                  )
+                  "id-ID"
+                )
                 : "-"}
             </span>
             <span className="md:inline-block hidden px-2 py-0.5 bg-green-100 text-green-800 rounded-full text-xs font-bold">
@@ -523,17 +695,15 @@ export default function CampaignDetailPage() {
         <div className="flex gap-2">
           <div className="flex p-0 border-2 border-gray-200 text-black rounded-lg">
             <button
-              className={`cursor-pointer rounded-l-lg p-2 px-4 transition-all text-sm font-medium ${
-                activeTab === "Deskripsi" ? "bg-leaf-500 text-white" : ""
-              }`}
+              className={`cursor-pointer rounded-l-lg p-2 px-4 transition-all text-sm font-medium ${activeTab === "Deskripsi" ? "bg-leaf-500 text-white" : ""
+                }`}
               onClick={() => setActiveTab("Deskripsi")}
             >
               Deskripsi
             </button>
             <button
-              className={`cursor-pointer rounded-r-lg p-2 px-4 transition-all text-sm font-medium ${
-                activeTab === "Data" ? "bg-leaf-500 text-white" : ""
-              }`}
+              className={`cursor-pointer rounded-r-lg p-2 px-4 transition-all text-sm font-medium ${activeTab === "Data" ? "bg-leaf-500 text-white" : ""
+                }`}
               onClick={() => setActiveTab("Data")}
             >
               Data
@@ -550,7 +720,11 @@ export default function CampaignDetailPage() {
         {/* Content Area */}
         <div className="flex-1">
           {activeTab === "Deskripsi" && <CampaignInfo campaign={campaign} />}
-          {activeTab === "Data" && <DataSection campaign={campaign} />}
+          {activeTab === "Data" && <DataSection
+            campaign={campaign}
+            donations={donations}
+            loadingDonations={loadingDonations}
+          />}
         </div>
       </div>
     </div>

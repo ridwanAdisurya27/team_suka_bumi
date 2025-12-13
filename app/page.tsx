@@ -37,7 +37,9 @@ export default function Home() {
             Dari pucuk yang merkah, asa bersemi. Setiap tunas adalah janji
             kehidupan, setapak kecil menghijaukan kembali hamparan bumi.
           </p>
-          <button className="primary">Pelajari</button>
+          <a href="/about" rel="noopener noreferrer">
+            <button className="primary">Pelajari</button>
+          </a>
         </div>
         <div className="info flex flex-col sm:flex-row sm:justify-around lg:justify-between sm:items-end gap-4 sm:mx-auto lg:mx-0">
           <div
@@ -185,7 +187,9 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 xl:gap-12 mt-10 mx-auto justify-between">
           {donationCards.map((card, index) => (
-            <DonationCard key={index} {...card} />
+            <a href="/campaign">
+              <DonationCard key={index} {...card} />
+            </a>
           ))}
         </div>
       </section>

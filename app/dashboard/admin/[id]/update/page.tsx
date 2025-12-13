@@ -132,7 +132,7 @@ export default function UpdateCampaignPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-full mx-auto">
       <div className="mb-8">
         <button
           onClick={() => router.back()}
@@ -296,20 +296,7 @@ export default function UpdateCampaignPage() {
             </div>
           </div>
 
-          {/* Contoh Deskripsi */}
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-700 mb-2">
-              Contoh Update:
-            </h3>
-            <p className="text-sm text-gray-600">
-              "Halo para donatur! Kami ingin mengabarkan bahwa kami telah
-              berhasil membeli 2,000 bibit mangrove untuk tahap pertama
-              penanaman di pesisir Jakarta Utara. Bibit-bibit ini akan kami
-              tanam pada tanggal 25 November mendatang. Kami juga sudah
-              melakukan survey lokasi dan memastikan kondisi tanah siap untuk
-              ditanami. Terima kasih atas dukungan kalian semua!"
-            </p>
-          </div>
+
 
           {/* Form Actions */}
           <div className="pt-4 flex gap-4">
@@ -343,18 +330,7 @@ export default function UpdateCampaignPage() {
         </form>
       </div>
 
-      {/* Debug Info (hanya di development) */}
-      {process.env.NODE_ENV === "development" && (
-        <div className="mt-8 p-4 bg-gray-900 text-white rounded-lg">
-          <h3 className="font-mono text-sm font-bold mb-2">Debug Info:</h3>
-          <p className="font-mono text-xs">
-            Check console (F12) untuk melihat data yang dikirim
-          </p>
-          <p className="font-mono text-xs mt-1">
-            Campaign ID dari params: {campaignId}
-          </p>
-        </div>
-      )}
+
     </div>
   );
 }

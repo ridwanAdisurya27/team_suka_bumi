@@ -179,9 +179,6 @@ export default function UpgradePage() {
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert(
-        "Terjadi kesalahan saat mengirim data: " + (error as Error).message
-      );
       toast.error(
         "Terjadi kesalahan saat mengirim data: " + (error as Error).message,
         {
